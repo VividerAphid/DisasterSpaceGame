@@ -1,0 +1,16 @@
+BACKLOG:
+
+-Game map
+    -Regions:
+        -PvE Regions
+        -PvP Regions
+        -Trade / Ceasefire Regions
+-Distance based combat
+-PvE until multiplayer setup
+
+
+
+vb0.0.1:
+
+ -Establish map with clickable regions, plus further zoom within those regions
+ -Establish crude artwork for ships, planets, space stations, etc.
