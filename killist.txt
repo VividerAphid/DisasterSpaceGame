@@ -8,6 +8,46 @@ BACKLOG:
 -Distance based combat
 -PvE until multiplayer setup
 
+-Map size: 10000 star systems? Region count scales approximately with map size
+
+-Factions: players can group up into a faction/clan
+    Factions have additional benefits such as a combined base, pooled resources, etc. Players can travel with other faction members as a fleet to complete group missions and other operations.
+
+    Defecting players take 300% damage from the faction they left, decaying 1% per hour, to discourage faction hopping during wars.
+
+    Factions can battle over map ownership, taking over star systems and trade hubs. Diplomacy and drama encouraged.
+
+-Income:
+   Numerous jobs/contracts:
+   -PvE contracts such as deliveries, escorts, resource collection, battling
+   -PvP bounties, raiding enemy faction stations 
+
+-Faction income:
+  -Trade hub ownership. Factions get a small cut of the daily goods
+  -PvP raids
+  -Donations 
+
+  -Combat:
+  -Optional in PvE areas, both parties must agree to a battle
+  -Range based, strike craft, support ships and long range weapons have a flight delay on them and are limited to within a few systems away, depending on tech level
+ -Short range weapons work roughly as a normal battle would go
+ -Trade hubs / central galaxy ceasefire areas combat is not allowed at all
+ -All combat happens in real time
+-Player Fleet:
+  -Base ship, the ship the player commands primarily
+  -Escort cruisers, both for combat, support, or carrying supplies
+  -Strike craft included as part of base ship once unlocked
+  -Max command limit based on player command level, up to 15? escort cruisers
+
+  -Player:
+  -Spawn with base ship and coin to upgrade ship minorly
+  -Spawn in PvE zone
+  -If taken out in combat, emergency warp will activate in PvE, ship destroyed in PvP (except in PvE zone duels)
+  -Player given option to reconstruct ship if they have sufficient coin on ship destruction. Additionally, faction shipyards can fund this too
+
+-Travelling:
+  -Travelling done in real time, a full cross map journey should take 3? days not using hyperlanes
+ -Hyperlanes boost flight speed but are only in certain areas, like roads
 
 
 vb0.0.1:
