@@ -5,7 +5,17 @@ class art{
     }
 
     renderEntities(entities){
-
+        console.log(entities);
+        this.G.fillStyle = "#222";
+        this.G.strokeStyle = "#222";
+        this.G.fillRect(0, 0, mapCan.width, mapCan.height);
+        
+        for(const layer in entities){
+            let lyr = entities[layer];
+            for(let r = 0; r < lyr.length; r++){
+                this[lyr[r].draw](lyr[r]);
+            }
+        }
     }
 
     drawTriangle(triangle){
@@ -30,6 +40,15 @@ class art{
     }
 
     drawPlanet(plan){
+        let g = this.G;
+        let radius = 10;
+        let scaledX = plan.x * this.scale;
+        let scaledY = plan.y * this.scale;
+
+        g.fillStyle = plan.color;
+        g.strokeStyle = plan.color;
+        g.arc(scaledX, scaledY, (radius*2) * this.scale, 0, 2*Math.PI);   
+        g.fill();
 
     }
 
