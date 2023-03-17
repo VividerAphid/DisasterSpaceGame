@@ -1,6 +1,7 @@
 class art{
     constructor(ctx){
         this.G = ctx;
+        this.scale = 3;
     }
 
     renderEntities(entities){
@@ -9,16 +10,23 @@ class art{
 
     drawTriangle(triangle){
         let g = this.G;
+        let baseWidth = 5;
+        let height = 7;
+        let scaledX = triangle.x * this.scale;
+        let scaledY = triangle.y * this.scale;
+        g.save();
         g.fillStyle = triangle.color;
         g.strokeStyle = triangle.color;
-        g.translate(triangle.x, triangle.y);
-        g.rotate(90 * Math.PI / 180);
-        g.translate(-triangle.x, -triangle.y);
+        g.translate(scaledX, scaledY);
+        g.rotate(triangle.direction);
+        g.translate(-scaledX, -scaledY);
         g.beginPath();
-        g.moveTo(triangle.x-15, triangle.y+15);
-        g.lineTo(triangle.x+15, triangle.y+15);
-        g.lineTo(triangle.x, triangle.y-21);
+        g.moveTo(scaledX-(baseWidth*this.scale), scaledY+(height*this.scale));
+        g.lineTo(scaledX+(baseWidth*this.scale), scaledY+(height*this.scale));
+        g.lineTo(scaledX, scaledY-(height*this.scale));
+        g.closePath();
         g.fill();
+        g.restore();
     }
 
     drawPlanet(plan){
