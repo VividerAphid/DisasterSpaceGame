@@ -54,9 +54,12 @@ v?:
  -Map will be a fixed map, generated using map maker tools from clickcon
  -Establish map with clickable regions, plus further zoom within those regions
 
+vb0.0.2:
+ -Fix entity rotations
+
 vb0.0.1:
- -Establish basic animation / movement of entities
- -Establish crude artwork for ships, planets, space stations, etc.
+X-Establish basic animation / movement of entities
+X-Establish crude artwork for ships, planets, space stations, etc.
  -Click recognition on entities
  -Player control
   -Basic movement

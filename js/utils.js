@@ -29,50 +29,22 @@ function removeDupes(arr){
 		})
 	return filtered;
 }
-function findLength(p0,p1, coords){
-	var x = coords[p0][0] - coords[p1][0];
-	var y = coords[p0][1] - coords[p1][1];
-	return Math.sqrt(x*x + y*y);
-}
+
 function findLengthPoints(x1, x2, y1, y2){
 	var x = x1 - x2;
 	var y = y1 - y2;
 	return Math.sqrt(x*x + y*y);
 }
-function findAngle(p0,p1,p2, coords){
-	var x1 = coords[p1][0]- coords[p0][0];
-	var y1 = coords[p1][1]- coords[p0][1];
-	var x2 = coords[p2][0]- coords[p0][0];
-	var y2 = coords[p2][1]- coords[p0][1];
-	return Math.acos((x1*x2+y1*y2)/(findLength(p0,p1, coords)*findLength(p0,p2, coords)));
+
+function findAnglePoints(p0,p1,p2){
+	var x1 = p1.x - p0.x;
+	var y1 = p1.y - p0.y;
+	var x2 = p2.x - p0.x;
+	var y2 = p2.y - p0.y;
+	return Math.acos((x1*x2+y1*y2)/(findLengthPoints(p0.x, p1.x, p0.y, p1.y)*findLengthPoints(p0.x, p2.x, p0.y, p2.y)));
 }
 function sleep(leng){
 	return new Promise(resolve => setTimeout(resolve, leng));
-}
-
-function scale(map, scal){
-	let leng = map.length;
-	for(var r = 0; r < leng; r++){
-		map[r].x = map[r].x * scal;
-		map[r].y = map[r].y * scal;
-	}
-	return map;
-}
-
-function shiftX(map, shi){
-	let leng = map.length;
-	for(var r = 0; r < leng; r++){
-		map[r].x = map[r].x + shi;
-	}
-	return map;
-}
-
-function shiftY(map, shi){
-	let leng = map.length;
-	for(var r = 0; r < leng; r++){
-		map[r].y = map[r].y + shi;
-	}
-	return map;
 }
 
 function copyArray(arr) {
@@ -103,7 +75,6 @@ function copyArray(arr) {
 	}
 	return cpy;
 }
-
 
 function createUuid() {
     const url = URL.createObjectURL(new Blob()).toString();

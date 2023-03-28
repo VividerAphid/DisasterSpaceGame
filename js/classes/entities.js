@@ -15,6 +15,29 @@ class entity{
     setDirection(deg){
         this.direction = deg * Math.PI / 180;
     }
+    update(time){
+        this.moveToTarget(time);
+    }
+    moveToTarget(time){
+        if(!!this.target){
+            let dx = this.target.x - this.x ;
+            let dy = this.target.y - this.y ; // Make sure it's TARGET MINUS SELF, NOT THE OTHER WAY AROUND (or it'll go backwards)
+            const len = Math.sqrt(dx * dx + dy * dy) ; // basically the distance to the target position.
+            if(len > 0){
+                let testAng = Math.atan2(this.target.y - this.y, this.target.x - this.x);
+                this.direction = testAng;
+                const new_len = Math.min(this.speed * time, len) ;
+                const factor = new_len / len ;
+                dx *= factor ;
+                dy *= factor ;
+                this.x += dx ;
+                this.y += dy ;   
+            }
+        }
+    }
+    move(){
+
+    }
 }
 
 class ship extends entity{

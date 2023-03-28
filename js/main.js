@@ -46,9 +46,20 @@ function loadTestWorld(){
     ents.layer1.push(new inanimate("Hell Station", 200, 270, "#f00", "drawStation"));
 
     ents.layer2.push(new ship("PlayerShip", 400, 400, "#909", "drawTriangle"));
+    ents.layer2.push(new ship("BotShip", 1000, 1000, "#a00", "drawTriangle"));
+    ents.layer2.push(new ship("BotShip2", 400, 1000, "#00a", "drawTriangle"));
 
     ents.layer3.push(new projectile("RocketTest", 350, 350, "#909", "drawRocket", ents.layer2[0], ents.layer1[0]));
-    ents.layer3[0].setDirection(300);
+    ents.layer2[0].setDirection(200);
+    ents.layer2[0].speed = 3;
+    //ents.layer2[0].target = {x:1000, y: 1000};
+    ents.layer2[0].target = ents.layer2[1];
+    ents.layer2[1].setDirection(270);
+    ents.layer2[1].speed = 3;
+    ents.layer2[1].target = ents.layer2[2];
+    ents.layer2[2].setDirection(270);
+    ents.layer2[2].speed = 3;
+    ents.layer2[2].target = ents.layer2[0];
     //ents.layer3[0].speed = 1;
 
     //ents.layer2[0].selected = true;
@@ -64,33 +75,3 @@ function checkClicked(entities){
         }
     } 
 }
-
-function updateFrame(artist, entities){
-    updateEntities(entities);
-    artist.renderEntities({}, entities);
-    requestAnimationFrame(function(){updateFrame(artist, entities);});
-}
-
-function updateEntities(entities){
-    for(const layer in entities){
-        let lyr = entities[layer];
-        lyr.forEach(element => {
-            if(element.speed > 0){
-                element.x += element.speed * Math.sin(element.direction);
-                element.y += element.speed * Math.cos(element.direction);
-                element.direction += 0.01;
-            }
-        });
-    }
-}
-
-// // The actual code:
-// let dx = target.x - my_pos.x ;
-// let dy = target.y - my_pos.y ; // Make sure it's TARGET MINUS SELF, NOT THE OTHER WAY AROUND (or it'll go backwards)
-// const len = Math.sqrt(dx * dx + dy * dy) ; // basically the distance to the target position.
-// const new_len = Math.min(my_speed * seconds_since_last_tick, len) ;
-// const factor = new_len / len ;
-// dx *= factor ;
-// dy *= factor ;
-// my_pos.x += dx ;
-// my_pos.y += dy ;

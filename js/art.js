@@ -11,12 +11,14 @@ class art{
         this.G.fillRect(0, 0, mapCan.width, mapCan.height);
 
         for(let r = 0; r < sectors.length; r++){
-            this.drawSector(sectors[r]);
+            //this.drawSector(sectors[r]);
             let entities = sectors[r].entities;
             for(const layer in entities){
                 let lyr = entities[layer];
-                for(let r = 0; r < lyr.length; r++){
-                    this[lyr[r].draw](lyr[r]);
+                if((this.scale >= 3 && layer == "layer3") || layer != "layer3"){
+                    for(let r = 0; r < lyr.length; r++){
+                        this[lyr[r].draw](lyr[r]);
+                    }
                 }
             }
         }

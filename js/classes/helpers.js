@@ -22,10 +22,14 @@ class game{
     render(){
         this.artist.renderEntities(this.sectors);
     }
-    update(){
+    update(time){
         for(const sect in this.sectors){
-            for(const layer in sect){
-                //update()
+            let sects = this.sectors[sect];
+            for(const layer in sects.entities){
+                let lyr = sects.entities[layer];
+                for(let r = 0; r < lyr.length; r++){
+                    lyr[r].update(time);
+                }
             }
         }
     }
@@ -34,8 +38,8 @@ class game{
         this.renderTimer = setInterval(function(){
             let t = Timing.now() - game.lastFrame;
 
-            game.update();
-            game.render();
+            game.update(t);
+            game.render(t);
         }, Math.round(1000 * this.frameDelay));
     }
 
