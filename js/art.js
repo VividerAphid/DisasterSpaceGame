@@ -1,10 +1,10 @@
 class art{
     constructor(ctx){
         this.G = ctx;
-        this.scale = 3;
+        this.scale = 1;
     }
 
-    renderEntities(sectors, entities){
+    renderEntities(sectors){
         //console.log(entities);
         this.G.fillStyle = "#222";
         this.G.strokeStyle = "#222";
@@ -12,12 +12,12 @@ class art{
 
         for(let r = 0; r < sectors.length; r++){
             this.drawSector(sectors[r]);
-        }
-
-        for(const layer in entities){
-            let lyr = entities[layer];
-            for(let r = 0; r < lyr.length; r++){
-                this[lyr[r].draw](lyr[r]);
+            let entities = sectors[r].entities;
+            for(const layer in entities){
+                let lyr = entities[layer];
+                for(let r = 0; r < lyr.length; r++){
+                    this[lyr[r].draw](lyr[r]);
+                }
             }
         }
     }
@@ -29,15 +29,23 @@ class art{
         let scaledX = triangle.x * this.scale;
         let scaledY = triangle.y * this.scale;
         g.save();
-        g.fillStyle = triangle.color;
+        // if(triangle.selected){
+        //     g.fillStyle = "#fff";
+        //     g.lineWidth = this.scale * 3;
+        // }
+        // else{
+            g.fillStyle = triangle.color;
+        //}
         g.strokeStyle = triangle.color;
         g.translate(scaledX, scaledY);
-        g.rotate(triangle.direction);
+        g.rotate(-triangle.direction);
         g.translate(-scaledX, -scaledY);
         g.beginPath();
-        g.moveTo(scaledX-(baseWidth*this.scale), scaledY+(height*this.scale));
-        g.lineTo(scaledX+(baseWidth*this.scale), scaledY+(height*this.scale));
-        g.lineTo(scaledX, scaledY-(height*this.scale));
+
+        g.moveTo(scaledX-(baseWidth*this.scale), scaledY-(height*this.scale));
+        g.lineTo(scaledX+(baseWidth*this.scale), scaledY-(height*this.scale));
+        g.lineTo(scaledX, scaledY+(height*this.scale));
+
         g.closePath();
         g.fill();
         g.restore();
@@ -50,7 +58,13 @@ class art{
         let scaledY = plan.y * this.scale;
 
         g.fillStyle = plan.color;
-        g.strokeStyle = plan.color;
+        if(plan.selected){
+            g.strokeStyle = "#fff";
+            g.lineWidth = this.scale * 3;
+        }
+        else{
+            g.strokeStyle = plan.color;
+        }
         g.beginPath();
         g.arc(scaledX, scaledY, (radius*2) * this.scale, 0, 2*Math.PI);   
         g.fill();
@@ -67,19 +81,27 @@ class art{
         let scaledRadY = 2 * this.scale;
         let tailSpan = 1;
         let tailLength = 2;
-
-        g.strokeStyle = rocket.color;
+        
+        g.save();
+        if(rocket.selected){
+            g.strokeStyle = "#fff";
+            g.lineWidth = this.scale * 3;
+        }
+        else{
+            g.strokeStyle = rocket.color;
+        }
         g.fillStyle = rocket.color;
         g.beginPath();
         g.ellipse(scaledX, scaledY, scaledRadX, scaledRadY, rocket.direction, 0, 2 * Math.PI);
         g.translate(scaledX, scaledY);
-        g.rotate(rocket.direction);
+        g.rotate(-rocket.direction);
         g.translate(-scaledX, -scaledY);
         g.moveTo(scaledX, scaledY+(scaledRadY*.8));
         g.lineTo(scaledX-(tailSpan*this.scale), scaledY+scaledRadY+(tailLength * this.scale));
         g.lineTo(scaledX+(tailSpan*this.scale), scaledY+scaledRadY+(tailLength * this.scale));
         g.closePath();
         g.fill();
+        g.restore();
     }
 
     drawStation(station){
@@ -90,7 +112,13 @@ class art{
         let scaledRadX = 15 * this.scale;
         let scaledRadY = 9 * this.scale;
 
-        g.strokeStyle = station.color;
+        if(station.selected){
+            g.strokeStyle = "#fff";
+            g.lineWidth = this.scale * 3;
+        }
+        else{
+            g.strokeStyle = station.color;
+        }
         g.fillStyle = "#777";
         g.lineWidth = 1 * this.scale;
         g.beginPath();
@@ -118,7 +146,7 @@ class art{
     }
 
     drawSector(sector){
-        console.log(sector);
+        //console.log(sector);
         let g = this.G;
         
         g.strokeStyle = sector.borderColor;

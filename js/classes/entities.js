@@ -8,6 +8,8 @@ class entity{
         this.y = y;
         this.color = col;
         this.draw = artStyle; //Save reference of render function here?
+        this.target;
+        this.selected = false;
     }
     printId(){console.log(this.id);}
     setDirection(deg){
@@ -47,6 +49,10 @@ class player{
     constructor(nm){
         this.id = generateUUID();
         this.name = nm;
+        this.ship;
+    }
+    assignShip(ship){
+        this.ship = ship;
     }
     printId(){console.log(this.id);}
 }

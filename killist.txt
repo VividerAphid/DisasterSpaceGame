@@ -47,11 +47,18 @@ BACKLOG:
 
 -Travelling:
   -Travelling done in real time, a full cross map journey should take 3? days not using hyperlanes
- -Hyperlanes boost flight speed but are only in certain areas, like roads
+  -Hyperlanes boost flight speed but are only in certain areas, like roads
 
+
+v?:
+ -Map will be a fixed map, generated using map maker tools from clickcon
+ -Establish map with clickable regions, plus further zoom within those regions
 
 vb0.0.1:
-
- -Establish map with clickable regions, plus further zoom within those regions
+ -Establish basic animation / movement of entities
  -Establish crude artwork for ships, planets, space stations, etc.
- -Map will be a fixed map, generated using map maker tools from clickcon
+ -Click recognition on entities
+ -Player control
+  -Basic movement
+  -Basic combat
+ 
