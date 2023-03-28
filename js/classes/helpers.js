@@ -21,6 +21,7 @@ class game{
     }
     render(){
         this.artist.renderEntities(this.sectors);
+        this.lastFrame = Timing.now();
     }
     update(time){
         for(const sect in this.sectors){

@@ -55,7 +55,7 @@ v?:
  -Establish map with clickable regions, plus further zoom within those regions
 
 vb0.0.2:
- -Fix entity rotations
+X-Fix entity rotations
 
 vb0.0.1:
 X-Establish basic animation / movement of entities

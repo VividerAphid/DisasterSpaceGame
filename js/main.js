@@ -51,14 +51,14 @@ function loadTestWorld(){
 
     ents.layer3.push(new projectile("RocketTest", 350, 350, "#909", "drawRocket", ents.layer2[0], ents.layer1[0]));
     ents.layer2[0].setDirection(200);
-    ents.layer2[0].speed = 3;
+    ents.layer2[0].speed = 10;
     //ents.layer2[0].target = {x:1000, y: 1000};
     ents.layer2[0].target = ents.layer2[1];
     ents.layer2[1].setDirection(270);
-    ents.layer2[1].speed = 3;
+    ents.layer2[1].speed = 10;
     ents.layer2[1].target = ents.layer2[2];
     ents.layer2[2].setDirection(270);
-    ents.layer2[2].speed = 3;
+    ents.layer2[2].speed = 10;
     ents.layer2[2].target = ents.layer2[0];
     //ents.layer3[0].speed = 1;
 
