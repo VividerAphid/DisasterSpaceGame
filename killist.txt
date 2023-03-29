@@ -56,6 +56,8 @@ v?:
 
 vb0.0.2:
 X-Fix entity rotations
+ -Zoom/pan within system view
+ -Quadtree-like setup for zooming (sector -> region -> subregion? -> system)
 
 vb0.0.1:
 X-Establish basic animation / movement of entities
