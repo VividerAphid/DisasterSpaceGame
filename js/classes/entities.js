@@ -40,6 +40,12 @@ class entity{
             this.x += dx ;
             this.y += dy ;   
         }
+        else{
+            if(this.target.id == "space"){
+                this.speed = 0;
+                this.target = undefined;
+            }
+        }
     }
     move(time){
         this.x += (this.speed * time) * Math.sin(this.direction);
@@ -67,12 +73,14 @@ class inanimate extends entity{
 }
 
 class sector{
-    constructor(nm, x, y, entities, bC){
+    constructor(nm, x, y, entities, bC, wid, hei){
         this.name = nm;
         this.x = x;
         this.y = y;
         this.entities = entities; //List of all the entities in the sector
         this.borderColor = bC;
+        this.width = wid;
+        this.height = hei;
     }
 }
 

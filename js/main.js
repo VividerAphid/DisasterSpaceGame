@@ -46,20 +46,20 @@ function loadTestWorld(){
     ents.layer1.push(new inanimate("Hell Station", 200, 270, "#f00", "drawStation"));
 
     ents.layer2.push(new ship("PlayerShip", 400, 400, "#909", "drawTriangle"));
-    ents.layer2.push(new ship("BotShip", 1000, 1000, "#a00", "drawTriangle"));
-    ents.layer2.push(new ship("BotShip2", 400, 1000, "#00a", "drawTriangle"));
+    //ents.layer2.push(new ship("BotShip", 1000, 1000, "#a00", "drawTriangle"));
+    ents.layer2.push(new ship("BotShip2", 200, 200, "#0aa", "drawTriangle"));
 
-    ents.layer3.push(new projectile("RocketTest", 350, 350, "#909", "drawRocket", ents.layer2[0], ents.layer1[0]));
-    ents.layer2[0].setDirection(200);
-    ents.layer2[0].speed = 25;
+    //ents.layer3.push(new projectile("RocketTest", 350, 350, "#909", "drawRocket", ents.layer2[0], ents.layer1[0]));
+    //ents.layer2[0].setDirection(200);
+    //ents.layer2[0].speed = 25;
     //ents.layer2[0].target = {x:1000, y: 1000};
-    ents.layer2[0].target = ents.layer2[1];
+    //ents.layer2[0].target = ents.layer2[1];
+    // ents.layer2[1].setDirection(270);
+    // ents.layer2[1].speed = 25;
+    // ents.layer2[1].target = ents.layer2[2];
     ents.layer2[1].setDirection(270);
-    ents.layer2[1].speed = 25;
-    ents.layer2[1].target = ents.layer2[2];
-    ents.layer2[2].setDirection(270);
-    ents.layer2[2].speed = 25;
-    ents.layer2[2].turnVal = 0.25 * Math.PI / 180;
+    ents.layer2[1].speed = 35;
+    ents.layer2[1].turnVal = 0.25 * Math.PI / 180;
     //ents.layer3[0].speed = 1;
 
     //ents.layer2[0].selected = true;
@@ -67,11 +67,55 @@ function loadTestWorld(){
     return ents;
 }
 
-function checkClicked(entities){
-    for(const layer in entities){
-        let lyr = entities[layer];
-        for(let r = 0; r < lyr.length; r++){
-            
+function checkClicked(gam){
+    //console.log("checkClicked fired");
+    let canvRect = mapCan.getBoundingClientRect();
+	let mx = (event.clientX - canvRect.left);
+	let my = (event.clientY - canvRect.top);
+
+    let sectors = gam.sectors;
+    let result = {target: "blank", isPlayer: false, coords: {x: mx, y:my}};
+    for(sec in sectors){
+        if(mx >= sectors[sec].x && sectors[sec].x + sectors[sec].width >= mx){
+            if(my >= sectors[sec].y && sectors[sec].y + sectors[sec].height >= my){
+                let ents = sectors[sec].entities;
+                for(layer in ents){
+                    let lyr = ents[layer];
+                    for(en in lyr){
+                        if(mx >= lyr[en].x - 10 && lyr[en].x + 10 >= mx){
+                            if(mx >= lyr[en].y - 10 && lyr[en].y + 10 >= mx){
+                                result.target = lyr[en];
+                            }
+                        }
+                    }
+                }
+            }
         }
-    } 
+    }
+    if(result.target == gam.player.ship){
+        gam.player.ship.selected = !gam.player.ship.selected;
+        result.isPlayer = !result.isPlayer;
+    }
+    else{
+        result.isPlayer = false
+    }
+    return result;
+}
+function processClick(gam, result){
+    //console.log(result);
+    if(!result.isPlayer){
+        if(gam.player.ship.selected){
+            console.log("ship selected!");
+            if(result.target != "blank"){
+                console.log("moving to object!");
+                gam.player.ship.target = result.target;
+                gam.player.ship.speed = 35;
+            }
+            else{
+                console.log("moving to coord!");
+                gam.player.ship.target = {id: "space", x: result.coords.x, y: result.coords.y};
+                gam.player.ship.speed = 35;
+            }
+        }
+    }
 }
