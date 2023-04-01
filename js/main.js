@@ -47,8 +47,8 @@ function loadTestWorld(){
 
     let pShip = new Ship("PlayerShip", 400, 400, "#909", "drawTriangle", ents);
     let bShip = new Ship("BotShip2", 200, 200, "#0aa", "drawTriangle", ents);
-    pShip.weapons.push(new LaserCannon(ents.layer2[0], 100, 3, 3, 100, 100, 5));
-    bShip.weapons.push(new MissleLauncher(ents.layer2[1], 100, 1, 3, 100, 100, 5));
+    pShip.weapons.push(new LaserCannon(pShip, 100, 3, 3, 100, 100, 5));
+    bShip.weapons.push(new MissleLauncher(bShip, 100, 1, 3, 100, 100, 5));
     bShip.setDirection(270);
     bShip.speed = 35;
     bShip.turnVal = 0.25 * Math.PI / 180;

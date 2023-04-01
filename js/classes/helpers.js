@@ -28,8 +28,9 @@ class game{
             let sects = this.sectors[sect];
             for(const layer in sects.entities){
                 let lyr = sects.entities[layer];
-                for(let r = 0; r < lyr.length; r++){
-                    lyr[r].update(time);
+                let iter = lyr.values();
+                for(let r = 0; r < lyr.size; r++){
+                    iter.next().value.update(time);
                 }
             }
         }

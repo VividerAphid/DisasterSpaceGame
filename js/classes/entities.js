@@ -170,7 +170,7 @@ class ShipWeapon{
 }
 class LaserCannon extends ShipWeapon{
     fire(){
-        this.owner.sector.layer3.push(new LaserBeam(this.owner.name + " laser", this.owner.x, this.owner.y, this.owner.color, "drawLaser", this.owner, this.owner.target, 100, 70));
+        this.owner.sector.layer3.add(new LaserBeam(this.owner.name + " laser", this.owner.x, this.owner.y, this.owner.color, "drawLaser", this.owner, this.owner.target, 100, 70));
         this.lastShot = Timing.now();
     }
     update(){
@@ -184,7 +184,7 @@ class LaserCannon extends ShipWeapon{
 
 class MissleLauncher extends ShipWeapon{
     fire(){
-        this.owner.sector.layer3.push(new Rocket(this.owner.name + " missile", this.owner.x, this.owner.y, this.owner.color, "drawRocket", this.owner, this.owner.target, 100, 1000, 50));
+        this.owner.sector.layer3.add(new Rocket(this.owner.name + " missile", this.owner.x, this.owner.y, this.owner.color, "drawRocket", this.owner, this.owner.target, 100, 1000, 50));
         this.lastShot = Timing.now();
     }
     update(){
