@@ -4,35 +4,6 @@ function loadSectors(){
     return sectors;
 }
 
-function generateRngTestWorld(){
-    let ents = {
-        layer0: [], //Planets, background objects
-        layer1: [], //Secondary background like space stations
-        layer2: [], //Primary layer for ships
-        layer3: []  //Layer for projectiles
-    }
-
-    let teamCols = ["#f00", "#0f0", "#00f", "#ff0", "#f0f", "#0ff"];
-
-    for(let r = 0; r < 10; r++){
-        ents.layer0.push(new Inanimate("planet"+r, Math.floor(Math.random()*1500), Math.floor(Math.random()*1500), "#432", "drawPlanet"));
-    }
-
-    for(let r = 0; r < ents.layer0.length; r++){
-        if(Math.random() > .7){
-            ents.layer1.push(new Inanimate("station"+r, ents.layer0[r].x - 10, ents.layer0[r].y + 10, teamCols[Math.floor(Math.random()*teamCols.length)], "drawStation"));
-        }
-    }
-
-    for(let r = 0; r < 1000; r++){
-        ents.layer2.push(new Ship("Ship"+r, Math.floor(Math.random()*1500), Math.floor(Math.random()*1500), teamCols[Math.floor(Math.random()*teamCols.length)], "drawTriangle"))
-        ents.layer2[r].setDirection(Math.floor(Math.random()*360));
-        ents.layer2[r].speed = 1;
-    }
-
-    return ents;
-}
-
 function loadTestWorld(){
     let ents = {
         layer0: new Set(), //Planets, background objects
@@ -64,6 +35,75 @@ function loadTestWorld(){
     //ents.layer3[0].speed = 1;
 
     //ents.layer2[0].selected = true;
+
+    return ents;
+}
+
+function loadLoadTestScene(){
+    let ships = [];
+    let cols = ["#909", "#0aa"];
+    let teams = [[], []];
+    let fleetSize = 25;
+    let ents = {
+        layer0: new Set(), //Planets, background objects
+        layer1: new Set(), //Secondary background like space stations
+        layer2: new Set(), //Primary layer for ships
+        layer3: new Set()  //Layer for projectiles
+    }
+
+    ents.layer0.add(new Inanimate("Hell", 250, 250, "#432", "drawPlanet", ents));
+
+    ents.layer1.add(new Inanimate("Hell Station", 200, 270, "#f00", "drawStation", ents));
+
+    for(let r = 0; r < fleetSize; r++){//T1
+        let tmpShip = new Ship("T1Goon"+r, (50 * r) + 50, 100, cols[0], "drawTriangle", ents);
+        tmpShip.setDirection(0);
+        tmpShip.speed = 10;
+        tmpShip.turnVal = 0.25 * Math.PI / 180;
+        let wep = Math.random();
+        if(wep > 0 && wep < .33){
+            tmpShip.weapons.push(new LaserCannon(tmpShip, 100, 3, 3, 100, 100, 5));
+        }
+        if(wep > .33 && wep < .66){
+            tmpShip.weapons.push(new MissleLauncher(tmpShip, 100, 2, 3, 100, 100, 5));
+        }
+        if(wep > .66){
+            tmpShip.weapons.push(new RailGun(tmpShip, 100, .25, 3, 100, 100, 10));
+        }
+        ships.push(tmpShip);
+        teams[0].push(tmpShip);
+    }
+    for(let r = 0; r < fleetSize; r++){//T2
+        let tmpShip = new Ship("T2Goon"+r, (50 * r) + 50, 400, cols[1], "drawTriangle", ents);
+        tmpShip.setDirection(180);
+        tmpShip.speed = 10;
+        tmpShip.turnVal = -0.25 * Math.PI / 180;
+        let wep = Math.random();
+        if(wep > 0 && wep < .33){
+            tmpShip.weapons.push(new LaserCannon(tmpShip, 100, 3, 3, 100, 100, 5));
+        }
+        if(wep > .33 && wep < .66){
+            tmpShip.weapons.push(new MissleLauncher(tmpShip, 100, 2, 3, 100, 100, 5));
+        }
+        if(wep > .66){
+            tmpShip.weapons.push(new RailGun(tmpShip, 100, .25, 3, 100, 100, 10));
+        }
+        ships.push(tmpShip);
+        teams[1].push(tmpShip);
+    }
+
+    for(let r = 0; r < teams[1].length; r++){
+        let pick = Math.floor(Math.random()* teams[1].length);
+        teams[0][r].target = teams[1][pick];
+    }
+    for(let r = 0; r < teams[0].length; r++){
+        let pick = Math.floor(Math.random()* teams[0].length);
+        teams[1][r].target = teams[0][pick];
+    }
+
+    for(let r = 0; r < ships.length; r++){
+        ents.layer2.add(ships[r]);
+    }
 
     return ents;
 }
