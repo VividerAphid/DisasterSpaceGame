@@ -49,6 +49,7 @@ function loadTestWorld(){
     let bShip = new Ship("BotShip2", 200, 200, "#0aa", "drawTriangle", ents);
     let bShip2 = new Ship("BotShip3", 300, 300, "#0aa", "drawTriangle", ents);
     pShip.weapons.push(new LaserCannon(pShip, 100, 3, 3, 100, 100, 5));
+    pShip.weapons.push(new RailGun(pShip, 100, .25, 3, 100, 100, 10));
     bShip.weapons.push(new MissleLauncher(bShip, 100, 1, 3, 100, 100, 5));
     bShip2.weapons.push(new LaserCannon(bShip2, 100, 3, 3, 100, 100, 5));
     bShip.setDirection(270);

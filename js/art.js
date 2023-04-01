@@ -1,7 +1,7 @@
 class art{
     constructor(ctx){
         this.G = ctx;
-        this.scale = 3;
+        this.scale = 1;
     }
 
     renderEntities(sectors){
@@ -143,6 +143,29 @@ class art{
         g.moveTo(laser.owner.x * this.scale, laser.owner.y* this.scale);
         //console.log("to " + laser.target.x + "," + laser.target.y);
         g.lineTo(laser.target.x* this.scale, laser.target.y* this.scale);
+        g.stroke();
+    }
+
+    drawSlug(slug){
+        let g = this.G;
+
+        let scaledX = slug.x * this.scale;
+        let scaledY = slug.y * this.scale;
+        let scaledRadX = 3 * this.scale;
+        let scaledRadY = .75 * this.scale;
+
+        if(slug.selected){
+            g.strokeStyle = "#fff";
+            g.lineWidth = this.scale * 3;
+        }
+        else{
+            g.strokeStyle = slug.color;
+        }
+        g.fillStyle = this.color;
+        g.strokeStyle = this.color;
+        g.beginPath();
+        g.ellipse(scaledX, scaledY, scaledRadX, scaledRadY, Math.PI/4, 0, 2 * Math.PI);
+        g.fill();
         g.stroke();
     }
 
