@@ -1,7 +1,7 @@
 class art{
     constructor(ctx){
         this.G = ctx;
-        this.scale = 1;
+        this.scale = 3;
     }
 
     renderEntities(sectors){
@@ -140,7 +140,7 @@ class art{
 
         g.beginPath();
         //console.log("drawing from " + laser.x + "," + laser.y);
-        g.moveTo(laser.x * this.scale, laser.y* this.scale);
+        g.moveTo(laser.owner.x * this.scale, laser.owner.y* this.scale);
         //console.log("to " + laser.target.x + "," + laser.target.y);
         g.lineTo(laser.target.x* this.scale, laser.target.y* this.scale);
         g.stroke();

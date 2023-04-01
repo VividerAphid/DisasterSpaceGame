@@ -15,18 +15,22 @@
 
     let playr = new Player("Aphid");
     let tstBot = new Bot("DUMMYBOI");
+    let tstBot2 = new Bot("DUMMYBOI2");
 
     let iter = sectors[0].entities.layer2.values(); //TEMPORARY
 
     playr.assignShip(iter.next().value);
     tstBot.assignShip(iter.next().value);
+    tstBot2.assignShip(iter.next().value);
     let gm = new game(mapCan);
     gm.sectors = sectors;
     gm.player = playr;
     gm.bots.push(tstBot);
+    gm.bots.push(tstBot2);
 
     playr.ship.target = tstBot.ship;
     tstBot.ship.target = playr.ship;
+    tstBot2.ship.target = playr.ship;
     //sectors[0].entities.layer2[0].weapons[0].fire();
 
     gm.start();
