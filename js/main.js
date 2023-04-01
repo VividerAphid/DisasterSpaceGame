@@ -15,17 +15,17 @@ function generateRngTestWorld(){
     let teamCols = ["#f00", "#0f0", "#00f", "#ff0", "#f0f", "#0ff"];
 
     for(let r = 0; r < 10; r++){
-        ents.layer0.push(new inanimate("planet"+r, Math.floor(Math.random()*1500), Math.floor(Math.random()*1500), "#432", "drawPlanet"));
+        ents.layer0.push(new Inanimate("planet"+r, Math.floor(Math.random()*1500), Math.floor(Math.random()*1500), "#432", "drawPlanet"));
     }
 
     for(let r = 0; r < ents.layer0.length; r++){
         if(Math.random() > .7){
-            ents.layer1.push(new inanimate("station"+r, ents.layer0[r].x - 10, ents.layer0[r].y + 10, teamCols[Math.floor(Math.random()*teamCols.length)], "drawStation"));
+            ents.layer1.push(new Inanimate("station"+r, ents.layer0[r].x - 10, ents.layer0[r].y + 10, teamCols[Math.floor(Math.random()*teamCols.length)], "drawStation"));
         }
     }
 
     for(let r = 0; r < 1000; r++){
-        ents.layer2.push(new ship("Ship"+r, Math.floor(Math.random()*1500), Math.floor(Math.random()*1500), teamCols[Math.floor(Math.random()*teamCols.length)], "drawTriangle"))
+        ents.layer2.push(new Ship("Ship"+r, Math.floor(Math.random()*1500), Math.floor(Math.random()*1500), teamCols[Math.floor(Math.random()*teamCols.length)], "drawTriangle"))
         ents.layer2[r].setDirection(Math.floor(Math.random()*360));
         ents.layer2[r].speed = 1;
     }
@@ -35,31 +35,25 @@ function generateRngTestWorld(){
 
 function loadTestWorld(){
     let ents = {
-        layer0: [], //Planets, background objects
-        layer1: [], //Secondary background like space stations
-        layer2: [], //Primary layer for ships
-        layer3: []  //Layer for projectiles
+        layer0: new Set(), //Planets, background objects
+        layer1: new Set(), //Secondary background like space stations
+        layer2: new Set(), //Primary layer for ships
+        layer3: new Set()  //Layer for projectiles
     }
 
-    ents.layer0.push(new inanimate("Hell", 250, 250, "#432", "drawPlanet"));
+    ents.layer0.add(new Inanimate("Hell", 250, 250, "#432", "drawPlanet", ents));
 
-    ents.layer1.push(new inanimate("Hell Station", 200, 270, "#f00", "drawStation"));
+    ents.layer1.add(new Inanimate("Hell Station", 200, 270, "#f00", "drawStation", ents));
 
-    ents.layer2.push(new ship("PlayerShip", 400, 400, "#909", "drawTriangle"));
-    //ents.layer2.push(new ship("BotShip", 1000, 1000, "#a00", "drawTriangle"));
-    ents.layer2.push(new ship("BotShip2", 200, 200, "#0aa", "drawTriangle"));
-
-    //ents.layer3.push(new projectile("RocketTest", 350, 350, "#909", "drawRocket", ents.layer2[0], ents.layer1[0]));
-    //ents.layer2[0].setDirection(200);
-    //ents.layer2[0].speed = 25;
-    //ents.layer2[0].target = {x:1000, y: 1000};
-    //ents.layer2[0].target = ents.layer2[1];
-    // ents.layer2[1].setDirection(270);
-    // ents.layer2[1].speed = 25;
-    // ents.layer2[1].target = ents.layer2[2];
-    ents.layer2[1].setDirection(270);
-    ents.layer2[1].speed = 35;
-    ents.layer2[1].turnVal = 0.25 * Math.PI / 180;
+    let pShip = new Ship("PlayerShip", 400, 400, "#909", "drawTriangle", ents);
+    let bShip = new Ship("BotShip2", 200, 200, "#0aa", "drawTriangle", ents);
+    pShip.weapons.push(new LaserCannon(ents.layer2[0], 100, 3, 3, 100, 100, 5));
+    bShip.weapons.push(new MissleLauncher(ents.layer2[1], 100, 1, 3, 100, 100, 5));
+    bShip.setDirection(270);
+    bShip.speed = 35;
+    bShip.turnVal = 0.25 * Math.PI / 180;
+    ents.layer2.add(pShip);
+    ents.layer2.add(bShip);
     //ents.layer3[0].speed = 1;
 
     //ents.layer2[0].selected = true;
@@ -108,12 +102,12 @@ function processClick(gam, result){
             console.log("ship selected!");
             if(result.target != "blank"){
                 console.log("moving to object!");
-                gam.player.ship.target = result.target;
+                gam.player.ship.moveTarget = result.target;
                 gam.player.ship.speed = 35;
             }
             else{
                 console.log("moving to coord!");
-                gam.player.ship.target = {id: "space", x: result.coords.x, y: result.coords.y};
+                gam.player.ship.moveTarget = {id: "space", x: result.coords.x, y: result.coords.y};
                 gam.player.ship.speed = 35;
             }
         }

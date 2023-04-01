@@ -15,9 +15,12 @@ class art{
             let entities = sectors[r].entities;
             for(const layer in entities){
                 let lyr = entities[layer];
-                if((this.scale >= 3 && layer == "layer3") || layer != "layer3"){
-                    for(let r = 0; r < lyr.length; r++){
-                        this[lyr[r].draw](lyr[r]);
+                //console.log(lyr);
+                if((this.scale >= 1 && layer == "layer3") || layer != "layer3"){
+                    let iter = lyr.values();
+                    for(let r = 0; r < lyr.size; r++){
+                        let ent = iter.next().value;
+                        this[ent.draw](ent);
                     }
                 }
             }
@@ -136,9 +139,9 @@ class art{
         g.lineWidth = 1 * this.scale;
 
         g.beginPath();
-        console.log("drawing from " + laser.x + "," + laser.y);
+        //console.log("drawing from " + laser.x + "," + laser.y);
         g.moveTo(laser.x * this.scale, laser.y* this.scale);
-        console.log("to " + laser.target.x + "," + laser.target.y);
+        //console.log("to " + laser.target.x + "," + laser.target.y);
         g.lineTo(laser.target.x* this.scale, laser.target.y* this.scale);
         g.stroke();
     }
