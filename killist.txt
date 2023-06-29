@@ -16,6 +16,15 @@ BACKLOG:
     Defecting players take 300% damage from the faction they left, decaying 1% per hour, to discourage faction hopping during wars.
 
     Factions can battle over map ownership, taking over star systems and trade hubs. Diplomacy and drama encouraged.
+    -Map ownership:
+   -Every 2 weeks? faction with highest score is awarded trophy/crown to display until the next score calculated, but map is not
+    reset
+   -"Crisis" balancer events spawn to keep the map moving, such as if a faction starts to get too big, and just random events spawning
+   -Factions exceeding 25% of the map will start having crisis events happen to them, severity and frequency increase the bigger the faction gets
+   -Random events spawn occasionally, perhaps once or twice a month for factions to deal with, Stellaris style but scaled down
+
+-Faction actions are chosen by faction leaders. Leaders can make order calls for faction members to participate in, ranging from construction orders, attack orders, mining orders, etc. Faction members can then claim orders to participate in for easier coordination
+
 
 -Income:
    Numerous jobs/contracts:
@@ -33,21 +42,40 @@ BACKLOG:
  -Short range weapons work roughly as a normal battle would go
  -Trade hubs / central galaxy ceasefire areas combat is not allowed at all
  -All combat happens in real time
--Player Fleet:
-  -Base ship, the ship the player commands primarily
+-Base ship, the ship the player commands primarily
   -Escort cruisers, both for combat, support, or carrying supplies
+  -Mining ships
+  -Cargo ships
+  -Fighter ships
   -Strike craft included as part of base ship once unlocked
-  -Max command limit based on player command level, up to 15? escort cruisers
+  -Max command limit based on player command level, up to 5?(revised until performance is assessed) escort cruisers 
+
 
   -Player:
   -Spawn with base ship and coin to upgrade ship minorly
   -Spawn in PvE zone
   -If taken out in combat, emergency warp will activate in PvE, ship destroyed in PvP (except in PvE zone duels)
   -Player given option to reconstruct ship if they have sufficient coin on ship destruction. Additionally, faction shipyards can fund this too
+-Player Ship:
+  -Several classes of ships, each favoring a specific stat, ie. high armor/low speed, high speed/low armor, etc
+  -Each class will have several tiers, 3-5?
+  -Each ship will have module slots for weapons / equipment
+-Weapons: 
+  -Several weapon types, each will have 10 tiers base available, a few additional special weapons available via mining special materials
+  -Weapon tiers are more linear style upgrades, ie Laser Cannon II is a direct upgrade of Laser Cannon I in every way, to minimize whacky metas and nuances and make combat more straightforward
+  -Additional equipment modules available too, with only 5  tiers
+    -Mining
+    -Storage
+    -Construction
+    -Radar
+    -Shield
+    -Jammer 
 
 -Travelling:
   -Travelling done in real time, a full cross map journey should take 3? days not using hyperlanes
   -Hyperlanes boost flight speed but are only in certain areas, like roads
+  -Factions can construct additional hyperlanes between their owned territory using special stations within each star system
+
 
 
 v?:
