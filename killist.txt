@@ -63,6 +63,23 @@ BACKLOG:
 -Weapons: 
   -Several weapon types, each will have 10 tiers base available, a few additional special weapons available via mining special materials
   -Weapon tiers are more linear style upgrades, ie Laser Cannon II is a direct upgrade of Laser Cannon I in every way, to minimize whacky metas and nuances and make combat more straightforward
+  -Weapons:
+    -Light Based: (Advantage against physical armor)
+      -Laser Beam
+        -Low fire rate, near-instant hit target, high damage
+      -JNL
+        -Medium fire rate, unguided, medium flight speed, mid-high damage
+      -Plasma
+        -Fast fire rate, unguided, medium flight speed, low-mid damage
+    -Projectile Based: (Advantage against energy shields)
+      -Guided Rocket
+        -Intended as equivalent to Laser Beam, fires seeking rocket that explodes on target or out of fuel
+        -Low fire rate, guided, high damage
+      -Cannon
+        -Medium fire rate, unguided, medium flight speed, mid-high damage
+      -Railgun
+        -Fast fire rate, unguided, medium flight speed, low-mid damage
+
   -Additional equipment modules available too, with only 5  tiers
     -Mining
     -Storage
