@@ -20,8 +20,10 @@ BACKLOG:
    -Every 2 weeks? faction with highest score is awarded trophy/crown to display until the next score calculated, but map is not
     reset
    -"Crisis" balancer events spawn to keep the map moving, such as if a faction starts to get too big, and just random events spawning
-   -Factions exceeding 25% of the map will start having crisis events happen to them, severity and frequency increase the bigger the faction gets
+   -Factions exceeding 20% of the map will start having crisis events happen to them, severity and frequency increase the bigger the faction gets
    -Random events spawn occasionally, perhaps once or twice a month for factions to deal with, Stellaris style but scaled down
+   -At 35%, Galactic Government declares bounty on the faction
+   -At 60% Galactic Government declares state of emergency and Galactic Navy steps in to attack until ownership is down to 40%
 
 -Faction actions are chosen by faction leaders. Leaders can make order calls for faction members to participate in, ranging from construction orders, attack orders, mining orders, etc. Faction members can then claim orders to participate in for easier coordination
 
@@ -67,18 +69,22 @@ BACKLOG:
     -Light Based: (Advantage against physical armor)
       -Laser Beam
         -Low fire rate, near-instant hit target, high damage
-      -JNL
-        -Medium fire rate, unguided, medium flight speed, mid-high damage
       -Plasma
+        -Medium fire rate, unguided, medium flight speed, mid-high damage
+      -JNL
         -Fast fire rate, unguided, medium flight speed, low-mid damage
     -Projectile Based: (Advantage against energy shields)
-      -Guided Rocket
-        -Intended as equivalent to Laser Beam, fires seeking rocket that explodes on target or out of fuel
-        -Low fire rate, guided, high damage
-      -Cannon
-        -Medium fire rate, unguided, medium flight speed, mid-high damage
       -Railgun
+        -Intended as equivalent to Laser Beam, fires extremely fast projectile with high damage
+        -Low fire rate, high accuracy, high damage
+      -Slug XL
+        -Medium fire rate, unguided, medium flight speed, mid-high damage
+      -Slug
         -Fast fire rate, unguided, medium flight speed, low-mid damage
+    -Explosives
+      -Guided Rocket
+      -Unguided Rocket
+      -Depth Charge
 
   -Additional equipment modules available too, with only 5  tiers
     -Mining
