@@ -33,16 +33,13 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-
-const controls = new OrbitControls( camera, renderer.domElement );
-controls.target.set( 0, 1, 0 );
-controls.update();
-
 const light = new THREE.AmbientLight( 0x404040, 0.5);
 scene.add( light );
 
+let enty = new EntityHandler(THREE);
+enty.loadTestScene();
 let sceney = new SceneHandler(THREE);
-sceney.loadStarSystemScene(THREE);
+sceney.loadStarSystemScene(THREE, enty._entities);
 const objs = sceney.getObjects();
 for(let r = 0; r < objs.length; r++){
 	scene.add(objs[r]);
@@ -51,13 +48,15 @@ const lights = sceney.getLights();
 for(let r = 0; r < lights.length; r++){
 	scene.add(lights[r]);
 }
+const controls = new OrbitControls( camera, renderer.domElement );
+controls.target.set( 0, 1, 0 );
+controls.update();
 
 
 function animate() {
 	requestAnimationFrame( animate );
-
-
 	renderer.render( scene, camera );
+	enty.update();
 }
 
 animate();

@@ -85,6 +85,7 @@ function createUuid() {
 }
 
 function generateUUID() {
+	//courtesy of John Cynarx
 	const chars = [ '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
 	let output = Array(5) ;
 	let genSub = function(n, is_spec) {
@@ -97,3 +98,11 @@ function generateUUID() {
 	};
 	return [genSub(8), genSub(4), genSub(4, true), genSub(4), genSub(12)].join('-') ;
   }
+
+  class Timing {
+	//courtesy of John Cynarx
+  
+    static now() { return performance.now() * 1e-3; }
+    static since(t) { return this.now() - t; }
+    
+}

@@ -14,9 +14,9 @@ class SceneHandler{
         return this._projectiles;
     }
 
-    loadStarSystemScene(THREE){
+    loadStarSystemScene(THREE, ships){
         this.loadStarSystem(THREE);
-        this.loadShips(THREE, 20, 500, 10);
+        this.loadShips(THREE, ships);
     }
 
     //TODO Add some input to regenerate same system
@@ -44,33 +44,32 @@ class SceneHandler{
         }
     }
 
-    loadShips(THREE, count, horizontalRange, verticalRange){
-        const ships = [];
+    loadShips(THREE, ships){
         const shipGeom = new THREE.CapsuleGeometry(1, 2, 1, 6);
         const greenMat = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
         const redMat = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
         greenMat.flatShading = true;
         redMat.flatShading = true;
     
-        for(let r = 0; r < count; r++){
-            let shippy;
+        for(let r = 0; r < ships.length; r++){
+            let shippyMesh;
+            let tempShip = ships[r];
             if(r % 2 == 0){
-                shippy = new THREE.Mesh(shipGeom, greenMat);
-                shippy.position.x = Math.floor(Math.random()*(horizontalRange*.25)) - horizontalRange/2;
-                shippy.position.y = Math.floor(Math.random()*verticalRange) - verticalRange/2;
-                shippy.position.z = Math.floor(Math.random()*(horizontalRange*.25)) - horizontalRange/2;
+                shippyMesh = new THREE.Mesh(shipGeom, greenMat);
             }
             else{
-                shippy = new THREE.Mesh(shipGeom, redMat);
-                shippy.position.x = Math.floor(Math.random()*(horizontalRange*.25)) + horizontalRange/4;
-                shippy.position.y = Math.floor(Math.random()*verticalRange) - verticalRange/2;
-                shippy.position.z = Math.floor(Math.random()*(horizontalRange*.25)) + horizontalRange/4;
+                shippyMesh = new THREE.Mesh(shipGeom, redMat);
             }
-            shippy.rotation.x = 1.57;
-            ships.push(shippy);
-            this._objects.push(shippy);
+            shippyMesh.position.x = tempShip._position.x;
+            shippyMesh.position.y = tempShip._position.y;
+            shippyMesh.position.z = tempShip._position.z;
+            shippyMesh.rotation.x = 1.57;
+            this._objects.push(shippyMesh);
+            ships[r]._obj = shippyMesh;
         }
-    
-        return ships;
+    }
+
+    createProjectile(projectileData){
+        
     }
 }
