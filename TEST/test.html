@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<head>
+    <title>DSG TESTING</title>
+</head>
+
+<link rel="stylesheet" href="main.css">
+
+<script src="art.js"></script>
+<script src="classes.js"></script>
+<script src="entities.js"></script>
+<script src="testMap.js"></script>
+<script src="main.js"></script>
+
+<body>
+    <div>
+        <canvas id="mapCan" width="1000" height="750"></canvas>
+    </div>
+    <script>
+        let ctx = mapCan.getContext('2d');
+        let arty = new artist(ctx);
+        let map = getMap();
+        let gam = new game(map, arty);
+        console.log(map);
+        renderMap(gam);
+    </script>
+</body>

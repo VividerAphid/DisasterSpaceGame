@@ -1,0 +1,21 @@
+body {
+	color:#fff;
+	background-color:#222;
+	font-size:20px;
+}
+.functionButton{
+	margin: 5px;
+	font-size: 20px;
+}
+#buttonHolder{
+	text-align: center;
+	border: 3px gray solid;
+	background-color: gray;
+	border-radius: 5px;
+	width: fit-content;
+}
+#mapDiv{
+	border: 3px gray solid;
+	border-radius: 5px;
+	width: fit-content;
+}

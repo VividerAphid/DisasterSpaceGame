@@ -1,0 +1,7 @@
+ -Render system for galaxy view
+ -Render system for star system view
+ -Bodies
+    -Planet
+    -Asteroids
+    -Starbase/ports
+    -Other space stations

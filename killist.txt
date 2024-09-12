@@ -66,7 +66,7 @@ BACKLOG:
   -Several weapon types, each will have 10 tiers base available, a few additional special weapons available via mining special materials
   -Weapon tiers are more linear style upgrades, ie Laser Cannon II is a direct upgrade of Laser Cannon I in every way, to minimize whacky metas and nuances and make combat more straightforward
   -Weapons:
-    -Light Based: (Advantage against physical armor)
+    -Energy Based: (Advantage against physical armor)
       -Laser Beam
         -Low fire rate, near-instant hit target, high damage
       -Plasma
