@@ -44,12 +44,30 @@ class Body{
         this.x = x;
         this.y = y;
     }
+    draw(art){
+        console.log("Default Body draw()!");
+    }
+}
+
+class Star extends Body{
+    constructor(id, x, y, radius, color){
+        super(id, x, y);
+        this.radius = radius;
+        this.color = color;
+    }
+    draw(art){
+        art.drawStar(this.x, this.y, this.color, this.radius);
+    }
 }
 
 class Planet extends Body{
-    constructor(id, x, y, radius){
+    constructor(id, x, y, radius, color){
         super(id, x, y);
         this.radius = radius;
+        this.color = color;
+    }
+    draw(art){
+        art.drawStar(this.x, this.y, this.color, this.radius);
     }
 }
 

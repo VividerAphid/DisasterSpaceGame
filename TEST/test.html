@@ -13,7 +13,7 @@
 
 <body>
     <div>
-        <canvas id="mapCan" width="1000" height="750"></canvas>
+        <canvas id="mapCan" width="1250" height="1250"></canvas>
     </div>
     <script>
         let ctx = mapCan.getContext('2d');
@@ -21,6 +21,7 @@
         let map = getMap();
         let gam = new game(map, arty);
         console.log(map);
+        mapCan.onclick = function(){checkSystemClick(gam);};
         renderMap(gam);
     </script>
 </body>

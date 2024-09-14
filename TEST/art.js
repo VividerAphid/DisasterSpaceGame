@@ -19,6 +19,15 @@ class artist{
         this.ctx.fill();
         this.ctx.stroke();
     }
+    drawRing(x, y, color, radius, lineWidth){
+        //let radius = 10;
+        this.ctx.beginPath();
+        this.ctx.lineWidth = lineWidth;
+        this.ctx.fillStyle = color;
+        this.ctx.strokeStyle = color;
+        this.ctx.arc(x, y, (radius*2), 0, 2*Math.PI);
+        this.ctx.stroke();
+    }
     drawText(x, y, text, font, colour){
         this.ctx.fillStyle = colour;
         this.ctx.strokeStyle = colour;
