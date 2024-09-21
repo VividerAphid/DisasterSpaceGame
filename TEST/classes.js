@@ -2,7 +2,7 @@ class game{
     constructor(map, graphics){
         this.map = map;
         this.graphics = graphics;
-        this.viewState = "galaxy";
+        this.viewState = "Galaxy";
         this.viewing = -1;
     }
 }

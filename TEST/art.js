@@ -15,7 +15,7 @@ class artist{
         this.ctx.lineWidth = 1;
         this.ctx.fillStyle = color;
         this.ctx.strokeStyle = color;
-        this.ctx.arc(x, y, (radius*2), 0, 2*Math.PI);
+        this.ctx.arc(x, y, radius, 0, 2*Math.PI);
         this.ctx.fill();
         this.ctx.stroke();
     }
@@ -25,7 +25,7 @@ class artist{
         this.ctx.lineWidth = lineWidth;
         this.ctx.fillStyle = color;
         this.ctx.strokeStyle = color;
-        this.ctx.arc(x, y, (radius*2), 0, 2*Math.PI);
+        this.ctx.arc(x, y, radius, 0, 2*Math.PI);
         this.ctx.stroke();
     }
     drawText(x, y, text, font, colour){

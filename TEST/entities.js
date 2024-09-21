@@ -7,7 +7,7 @@ class StarSystem{
         this.bodies = bodies;
     }
     drawStar(art){
-        art.drawStar(this.x, this.y, "#ddd", 10);
+        art.drawStar(this.x, this.y, "#ddd", 20);
     }
     drawLabels(art){
         // let constMult = "";
@@ -47,6 +47,11 @@ class Body{
     draw(art){
         console.log("Default Body draw()!");
     }
+    handleRotate(degrees, center){
+        let newCoord = rotatePoint2(this.x, this.y, degreesToRadians(degrees), center.x, center.y);
+        this.x = newCoord[0];
+        this.y = newCoord[1];
+    }
 }
 
 class Star extends Body{
@@ -61,12 +66,32 @@ class Star extends Body{
 }
 
 class Planet extends Body{
-    constructor(id, x, y, radius, color){
+    constructor(id, x, y, radius, color, orbiting, orbitAmount){
         super(id, x, y);
         this.radius = radius;
         this.color = color;
+        this.orbiting = orbiting;
+        this.orbitAmount = orbitAmount;
+        this.orbitRadius = findLengthPoints(this.x, this.orbiting.x, this.y, this.orbiting.y);
+        this.satellites = [];
+    }
+    updateOrbit(){
+        this.handleRotate(this.orbitAmount, this.orbiting);
+        if(this.satellites.length > 0){
+            for(let r = 0; r < this.satellites.length; r++){
+                let sat = this.satellites[r];
+                sat.handleRotate(this.orbitAmount, this.orbiting);
+                if(sat.satellites.length > 1){
+                    for(let t = 0; t < sat.satellites.length; t++){
+                        let minisat = sat.satellites[t];
+                        minisat.handleRotate(this.orbitAmount, this.orbiting);
+                    }
+                }
+            }
+        }
     }
     draw(art){
+        art.drawRing(this.orbiting.x, this.orbiting.y, "#444", this.orbitRadius, 1);
         art.drawStar(this.x, this.y, this.color, this.radius);
     }
 }
@@ -74,5 +99,13 @@ class Planet extends Body{
 class Station extends Body{
     constructor(id, x, y){  
         super(id, x, y);
+    }
+}
+
+class ClickButton extends Body{
+    constructor(id, x, y, func, draw){
+        super(id, x, y);
+        this.func = func;
+        this.draw = draw;
     }
 }

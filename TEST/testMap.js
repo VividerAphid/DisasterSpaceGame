@@ -1,5 +1,5 @@
 function getMap(){
-    var map = [new StarSystem(0, 475, 350, [8,1,9,3], [new Star(1, 600, 600, 20, "#d00"), new Planet(2, 350, 400, 10, "#a51"), new Planet(3, 390, 380, 5, "#966")]),
+    var map = [new StarSystem(0, 475, 350, [8,1,9,3], []),
     new StarSystem(1, 405, 305, [2,0,3], []),
     new StarSystem(2, 447, 244, [8,1,10,7], []),
     new StarSystem(3, 356, 455, [13,0,1,5,4], []),
