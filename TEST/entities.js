@@ -5,9 +5,10 @@ class StarSystem{
         this.y = y;
         this.connections = connections;
         this.bodies = bodies;
+        this.radius = 20;
     }
     drawStar(art){
-        art.drawStar(this.x, this.y, "#ddd", 20);
+        art.drawStar(this.x, this.y, "#ddd", this.radius);
     }
     drawLabels(art){
         // let constMult = "";
@@ -51,6 +52,9 @@ class Body{
         let newCoord = rotatePoint2(this.x, this.y, degreesToRadians(degrees), center.x, center.y);
         this.x = newCoord[0];
         this.y = newCoord[1];
+    }
+    action(){
+        console.log("Default action(), "+this.id+" was clicked!");
     }
 }
 
@@ -102,10 +106,24 @@ class Station extends Body{
     }
 }
 
-class ClickButton extends Body{
-    constructor(id, x, y, func, draw){
+class ResourceNode extends Body{
+    constructor(id, x, y, resource, rate, slots){
         super(id, x, y);
-        this.func = func;
+        this.resource = resource;
+        this.rate = rate;
+        this.slots = slots;
+        this.radius = 15;
+    }
+    draw(art){
+        art.drawDiamond(this.x, this.y, "#a1a", this.radius, this.radius);
+    }
+}
+
+class ClickButton extends Body{
+    constructor(id, x, y, rad, func, draw){
+        super(id, x, y);
+        this.radius = rad;
+        this.action = func;
         this.draw = draw;
     }
 }

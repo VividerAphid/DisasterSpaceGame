@@ -28,6 +28,17 @@ class artist{
         this.ctx.arc(x, y, radius, 0, 2*Math.PI);
         this.ctx.stroke();
     }
+    drawDiamond(x, y, color, xRad, yRad){
+        this.ctx.fillStyle = color;
+        this.ctx.strokeStyle = color;
+        this.ctx.beginPath();
+        this.ctx.moveTo(x-xRad, y);
+        this.ctx.lineTo(x, y-yRad);
+        this.ctx.lineTo(x+xRad, y);
+        this.ctx.lineTo(x, y+yRad);
+        this.ctx.closePath();
+        this.ctx.fill();
+    }
     drawText(x, y, text, font, colour){
         this.ctx.fillStyle = colour;
         this.ctx.strokeStyle = colour;

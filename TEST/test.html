@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="main.css">
 
 <script src="utils.js"></script>
+<script src="aphidran.js"></script>
 <script src="art.js"></script>
 <script src="classes.js"></script>
 <script src="entities.js"></script>
@@ -19,8 +20,9 @@
     <script>
         let ctx = mapCan.getContext('2d');
         let arty = new artist(ctx);
-        let map = generateMapContents(getMap());
-        let gam = new game(map, arty);
+        let gam = new game([], arty);
+        let map = generateMapContents(getMapMed(),gam);
+        gam.map = map;
         var isTicking = false;
         var tickFunc = "";
         //console.log(map);

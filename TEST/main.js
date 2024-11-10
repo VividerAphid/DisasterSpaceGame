@@ -28,12 +28,12 @@ function checkClick(gam){
 	let x = (event.clientX - canvRect.left);
 	let y = (event.clientY - canvRect.top);
 
-    let clickRad = 15;
+    let clickRad = 5;
 
     if(gam.viewState == "Galaxy"){
         for(let r = 0; r < map.length; r++){
-            if (x >= (map[r].x - clickRad) && x <= (map[r].x + clickRad)){
-                if (y >= (map[r].y - clickRad) && y <= (map[r].y + clickRad)){
+            if (x >= (map[r].x - (map[r].radius + clickRad)) && x <= (map[r].x + (map[r].radius + clickRad))){
+                if (y >= (map[r].y - (map[r].radius + clickRad)) && y <= (map[r].y + (map[r].radius + clickRad))){
                     //console.log(r);
                     gam.viewState = "StarSystem";
                     gam.viewing = r;
@@ -44,16 +44,15 @@ function checkClick(gam){
     }
     else {
         if(gam.viewState == "StarSystem"){
-        //console.log("star system click");
-        isTicking = !isTicking;
-        //console.log(isTicking);
-        if(isTicking){
-            tickFunc = setInterval(gameTick, 100, gam);
+            let bodies = gam.map[gam.viewing].bodies;
+            for(let r = 0; r < bodies.length; r++){
+                if (x >= (bodies[r].x - (bodies[r].radius + clickRad)) && x <= (bodies[r].x + (bodies[r].radius + clickRad))){
+                    if (y >= (bodies[r].y - (bodies[r].radius + clickRad)) && y <= (bodies[r].y + clickRad)){
+                        bodies[r].action(gam);
+                    }
+                }
+            }
         }
-        else{
-            clearInterval(tickFunc);
-        }
-    }
     }
 }
 
@@ -69,34 +68,38 @@ function generateMapContents(map){
     let planetRads = [10, 25]; //min max
     let planetColors = ["#a51", "#005e19", "#004fc4", "#b07200", "#b02d13", "#877b78"];
     let moonColors = ["#966", "#ccc", "#595757"];
-    for(let r = 0; r < 1; r++){
-        let xButtonFunc = function(gam){gam};
-        let xButton = new ClickButton(0, 10, 10, )
+    let aphiRan = new AphidRandom("seed");
+    for(let r = 0; r < map.length; r++){
+        let xButtonFunc = function(gam){gam.viewState = "Galaxy"; gam.viewing = -1; renderMap(gam);};
+        let xButtonDraw = function(graphics){graphics.drawStar(25,35,"#900",20); graphics.drawText(10,50,"X","bold 45px Consolas","#fff");};
+        let xButton = new ClickButton(0, 25, 35, 20, xButtonFunc, xButtonDraw);
+        map[r].bodies.push(xButton);
         let planetcount = 9;//Math.floor(Math.random()*10);
-        let starcolpick = Math.floor(Math.random()*starColors.length);
+        let starcolpick = Math.floor(aphiRan.random()*starColors.length);
         let centerStar = new Star(1, centerCoords[0], centerCoords[1], starRad, starColors[starcolpick]);
         map[r].bodies.push(centerStar);
         let prevDist = centerCoords[1] - 100;
         for(let t = 0; t < planetcount; t++){
-            let rad = Math.floor(Math.random()* (planetRads[1]-planetRads[0])) + planetRads[0];
-            let colpick = Math.floor(Math.random()*planetColors.length);
-            let amt = (Math.random()*10) + 5;
+            let rad = Math.floor(aphiRan.random()* (planetRads[1]-planetRads[0])) + planetRads[0];
+            let colpick = Math.floor(aphiRan.random()*planetColors.length);
+            let amt = (aphiRan.random()*10) + 5;
             let planet = new Planet(t+2, centerCoords[0], prevDist, rad, planetColors[colpick], centerStar, amt);
-            prevDist = prevDist - ((Math.random()*20) + 50);           
+            prevDist = prevDist - ((aphiRan.random()*20) + 50);           
             map[r].bodies.push(planet);
-            let ang = Math.random()*360;
+            let ang = aphiRan.random()*360;
             planet.handleRotate(ang, centerStar);
-            if(Math.random() > .6){
-                let moonCount = Math.floor(Math.random()*3) +1;
+            if(aphiRan.random() > .6){
+                let moonCount = Math.floor(aphiRan.random()*3) +1;
                 for(let z = 0; z < moonCount; z++){
-                    let mooncol = Math.floor(Math.random()*moonColors.length);
+                    let mooncol = Math.floor(aphiRan.random()*moonColors.length);
                     let moon = new Planet(t+2, planet.x, planet.y - 30, 5, moonColors[mooncol], planet, 3);
                     map[r].bodies.push(moon);
                     planet.satellites.push(moon);
-                    moon.handleRotate(Math.random()*360, planet);
+                    moon.handleRotate(aphiRan.random()*360, planet);
                 }
             }
         }
+        map[r].bodies.push(new ResourceNode(42, aphiRan.rangeInt(20, centerCoords[0]*2),aphiRan.rangeInt(20, centerCoords[0]*2), "Rare Cheese", 20, 20));
     }
     //For demoing colors
     // for(let r = 0; r < starColors.length; r++){
