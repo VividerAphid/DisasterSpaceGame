@@ -9,6 +9,8 @@ function renderMap(gam){
         systems[r].drawStar(arty);
         systems[r].drawDebugs(arty);
     }
+    let playerLoc = [gam.map[gam.player.location].x, gam.map[gam.player.location].y-10,]
+    gam.graphics.drawPointer(playerLoc[0], playerLoc[1], gam.player.color);
 }
 
 function renderStarSystem(gam){
@@ -19,6 +21,10 @@ function renderStarSystem(gam){
     for(let r = 0; r < bodies.length; r++){
         //console.log(r);
         bodies[r].draw(gam.graphics);
+    }
+    let ents = gam.map[gam.viewing].entities;
+    for(let r = 0; r < ents.length; r++){
+        ents[r].draw(gam.graphics);
     }
 }
 
@@ -118,4 +124,16 @@ function gameTick(gam){
         }
         renderStarSystem(gam);
     }
+}
+
+function initPlayer(){
+    let player = new Player(1, "Player", "#a00");
+    let aphiRan = new AphidRandom("seed");
+    player.location = 44;
+    player.x = aphiRan.rangeInt(20, 1000);
+    player.y = aphiRan.rangeInt(20, 1000);
+    let ship = new Ship(1, player.x, player.y, player, player.color);
+    ship.direction = degreesToRadians(aphiRan.rangeInt(0, 360));
+    player.ship = ship;
+    return player;
 }

@@ -5,6 +5,7 @@ class StarSystem{
         this.y = y;
         this.connections = connections;
         this.bodies = bodies;
+        this.entities = [];
         this.radius = 20;
     }
     drawStar(art){
@@ -125,5 +126,19 @@ class ClickButton extends Body{
         this.radius = rad;
         this.action = func;
         this.draw = draw;
+    }
+}
+
+class Ship{
+    constructor(id, x, y, owner, color){
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.owner = owner;
+        this.color = color;
+        this.direction = 0;
+    }
+    draw(art){
+        art.drawTriangle(this);
     }
 }

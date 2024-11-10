@@ -20,9 +20,12 @@
     <script>
         let ctx = mapCan.getContext('2d');
         let arty = new artist(ctx);
-        let gam = new game([], arty);
+        let gam = new Game([], arty);
+        let player = initPlayer();
         let map = generateMapContents(getMapMed(),gam);
         gam.map = map;
+        gam.player = player;
+        gam.map[player.location].entities.push(player.ship);
         var isTicking = false;
         var tickFunc = "";
         //console.log(map);
