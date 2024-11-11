@@ -26,8 +26,9 @@
         gam.map = map;
         gam.player = player;
         gam.map[player.location].entities.push(player.ship);
-        var isTicking = false;
-        var tickFunc = "";
+        var isTicking = true;
+        var systemViewTick = setInterval(gameTick, 500, gam);
+        var galaxyTick = "";
         //console.log(map);
         mapCan.onclick = function(){checkClick(gam);};
         renderMap(gam);

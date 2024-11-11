@@ -6,6 +6,7 @@ class StarSystem{
         this.connections = connections;
         this.bodies = bodies;
         this.entities = [];
+        this.pin = -1; //For when player clicks in system view to create a pin
         this.radius = 20;
     }
     drawStar(art){
@@ -120,25 +121,74 @@ class ResourceNode extends Body{
     }
 }
 
-class ClickButton extends Body{
+class ClickButton{
     constructor(id, x, y, rad, func, draw){
-        super(id, x, y);
+        this.id = id;
+        this.x = x;
+        this.y = y;
         this.radius = rad;
         this.action = func;
         this.draw = draw;
     }
 }
 
-class Ship{
-    constructor(id, x, y, owner, color){
+class Pin{
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+        this.name = "Pin";
+    }
+    draw(art){
+        art.drawPointer(this.x, this.y, "#fff");
+    }
+}
+
+class Entity{
+    //referring to any game object updated in real time, such as ships, turrets, projectiles
+    constructor(id, x, y){
         this.id = id;
         this.x = x;
         this.y = y;
+        this.moveSpeed = 0;
+    }
+    step(){
+        console.log("Default step not overriden!");
+    }
+}
+
+class Ship extends Entity{
+    constructor(id, x, y, owner, color){
+        super(id, x, y);
         this.owner = owner;
         this.color = color;
         this.direction = 0;
+        this.target = -1;
+        this.moveSpeed = 20;
     }
     draw(art){
         art.drawTriangle(this);
+    }
+    calcDirection(){
+        let targetAng = Math.atan2((this.target.x - this.x), (this.target.y - this.y));
+        this.direction = targetAng;
+    }
+    step(gam){
+        let dx = this.target.x - this.x ;
+        let dy = this.target.y - this.y ; // Make sure it's TARGET MINUS SELF, NOT THE OTHER WAY AROUND (or it'll go backwards)
+        const len = Math.sqrt(dx * dx + dy * dy) ; // basically the distance to the target position.
+        
+        if(len > 0){
+            // let targetAng = Math.atan2((this.moveTarget.x - this.x), (this.moveTarget.y - this.y));
+            // this.direction = targetAng;
+            const new_len = Math.min(this.moveSpeed, len) ;
+            const factor = new_len / len ;
+            dx *= factor ;
+            dy *= factor ;
+            this.x += dx ;
+            this.y += dy ;   
+        }
+        else{
+            gam.map[gam.viewing].pin = -1;
+        }
     }
 }

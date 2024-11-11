@@ -26,6 +26,9 @@ function renderStarSystem(gam){
     for(let r = 0; r < ents.length; r++){
         ents[r].draw(gam.graphics);
     }
+    if(gam.map[gam.viewing].pin != -1){
+        gam.map[gam.viewing].pin.draw(gam.graphics);
+    }
 }
 
 function checkClick(gam){
@@ -50,13 +53,24 @@ function checkClick(gam){
     }
     else {
         if(gam.viewState == "StarSystem"){
-            let bodies = gam.map[gam.viewing].bodies;
+            let system = gam.map[gam.viewing];
+            let bodies = system.bodies;
+            let ents = system.entities;
+            let action = "";
+            if(gam.viewing == gam.player.location){
+                system.pin = new Pin(x, y);
+                gam.player.ship.target = system.pin;
+                gam.player.ship.calcDirection();
+            }
             for(let r = 0; r < bodies.length; r++){
                 if (x >= (bodies[r].x - (bodies[r].radius + clickRad)) && x <= (bodies[r].x + (bodies[r].radius + clickRad))){
                     if (y >= (bodies[r].y - (bodies[r].radius + clickRad)) && y <= (bodies[r].y + clickRad)){
-                        bodies[r].action(gam);
+                        action = bodies[r].action(gam);
                     }
                 }
+            }
+            if(action != "exit"){
+                renderStarSystem(gam);
             }
         }
     }
@@ -76,7 +90,7 @@ function generateMapContents(map){
     let moonColors = ["#966", "#ccc", "#595757"];
     let aphiRan = new AphidRandom("seed");
     for(let r = 0; r < map.length; r++){
-        let xButtonFunc = function(gam){gam.viewState = "Galaxy"; gam.viewing = -1; renderMap(gam);};
+        let xButtonFunc = function(gam){gam.map[gam.viewing].pin = -1; gam.viewState = "Galaxy"; gam.viewing = -1; renderMap(gam); return "exit";};
         let xButtonDraw = function(graphics){graphics.drawStar(25,35,"#900",20); graphics.drawText(10,50,"X","bold 45px Consolas","#fff");};
         let xButton = new ClickButton(0, 25, 35, 20, xButtonFunc, xButtonDraw);
         map[r].bodies.push(xButton);
@@ -115,12 +129,10 @@ function generateMapContents(map){
 }
 
 function gameTick(gam){
-    if(isTicking){
-        let map = gam.map[gam.viewing].bodies;
-        for(let r = 0; r < map.length; r++){
-            if(map[r].id > 1){
-                map[r].updateOrbit();
-            }
+    if(isTicking && gam.viewState == "StarSystem"){
+        let ents = gam.map[gam.viewing].entities;
+        for(let r = 0; r < ents.length; r++){
+            ents[r].step(gam);
         }
         renderStarSystem(gam);
     }

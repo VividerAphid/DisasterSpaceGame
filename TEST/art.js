@@ -67,22 +67,22 @@ class artist{
         g.closePath();
         g.fill();
 
-        // if(triangle.owner.isBot == false){
-        //     //console.log("drawing player");
-        //     g.strokeStyle = "#fff";
-        //     g.lineWidth = 4;
-        //     g.translate(scaledX, scaledY);
-        //     //g.rotate(-triangle.direction);
-        //     g.translate(-scaledX, -scaledY);
-        //     g.beginPath();
+        if(triangle.owner.isBot == false){
+            //console.log("drawing player");
+            g.strokeStyle = "#fff";
+            g.lineWidth = 2;
+            g.translate(scaledX, scaledY);
+            //g.rotate(-triangle.direction);
+            g.translate(-scaledX, -scaledY);
+            g.beginPath();
 
-        //     g.moveTo(scaledX-(baseWidth*this.scale), scaledY-(height*this.scale));
-        //     g.lineTo(scaledX+(baseWidth*this.scale), scaledY-(height*this.scale));
-        //     g.lineTo(scaledX, scaledY+(height*this.scale));
+            g.moveTo(scaledX-(baseWidth*this.scale), scaledY-(height*this.scale));
+            g.lineTo(scaledX+(baseWidth*this.scale), scaledY-(height*this.scale));
+            g.lineTo(scaledX, scaledY+(height*this.scale));
 
-        //     g.closePath();
-        //     g.stroke();
-        // }
+            g.closePath();
+            g.stroke();
+        }
         g.restore();
     }
     drawPlanetHighlight(x, y, rad){
