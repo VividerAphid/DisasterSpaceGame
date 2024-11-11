@@ -1,7 +1,18 @@
 X-Render system for galaxy view
- -Render system for star system view
+X-Render system for star system view
  -Bodies
    X-Planet
     -Asteroids
     -Starbase/ports
     -Other space stations
+X-Crude ship movement
+   X-Move to pin
+    -Dashed line for movement path
+    -System jump
+    -Action menu
+      -Move here
+      -View
+ -Resource Nodes
+ -Improved System generation
+   -Resource nodes generate by region
+   -NPC ships generate

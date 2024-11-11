@@ -6,6 +6,9 @@ function renderMap(gam){
         systems[r].drawConnections(arty, systems);
     }
     for(let r = 0; r < systems.length; r++){
+        if(gam.systemHighlight == r){
+            gam.graphics.drawPlanetHighlight(systems[r].x, systems[r].y, systems[r].radius, "#0ff");
+        }
         systems[r].drawStar(arty);
         systems[r].drawDebugs(arty);
     }
@@ -40,16 +43,28 @@ function checkClick(gam){
     let clickRad = 5;
 
     if(gam.viewState == "Galaxy"){
+        let highlight = -1;
         for(let r = 0; r < map.length; r++){
             if (x >= (map[r].x - (map[r].radius + clickRad)) && x <= (map[r].x + (map[r].radius + clickRad))){
                 if (y >= (map[r].y - (map[r].radius + clickRad)) && y <= (map[r].y + (map[r].radius + clickRad))){
-                    //console.log(r);
-                    gam.viewState = "StarSystem";
-                    gam.viewing = r;
-                    renderStarSystem(gam);
+                    if(gam.systemHighlight == r){
+                        gam.viewState = "StarSystem";
+                        gam.viewing = r;
+                        renderStarSystem(gam);
+                    }
+                    else{
+                        highlight = r;
+                    }
                 }
             }
         }
+        if(highlight != -1){
+            gam.systemHighlight = highlight;
+        }
+        else{
+            gam.systemHighlight = -1;
+        }
+        renderMap(gam);
     }
     else {
         if(gam.viewState == "StarSystem"){

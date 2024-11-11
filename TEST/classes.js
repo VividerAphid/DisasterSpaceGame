@@ -5,6 +5,7 @@ class Game{
         this.viewState = "Galaxy"; // "Galaxy", "StarSystem", "Menu"
         this.viewing = -1;
         this.player = -1;
+        this.systemHighlight = -1;
     }
 }
 

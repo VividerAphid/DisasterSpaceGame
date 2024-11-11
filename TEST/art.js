@@ -85,10 +85,18 @@ class artist{
         }
         g.restore();
     }
-    drawPlanetHighlight(x, y, rad){
-        this.ctx.fillStyle = "#fff";
-        this.ctx.strokeStyle = "#fff";
-        
+    drawPlanetHighlight(x, y, rad, col){
+        this.ctx.lineWidth = 1;
+	    this.ctx.beginPath();
+	    this.ctx.fillStyle = col;
+	    this.ctx.fillRect(x-rad, y-rad, rad*2, rad*2);
+	    this.ctx.beginPath();
+	    this.ctx.fillStyle = col;
+	    this.ctx.moveTo(x, y-rad*1.4);
+	    this.ctx.lineTo(x-rad*1.4, y);
+	    this.ctx.lineTo(x, y+rad*1.4);
+	    this.ctx.lineTo(x+rad*1.4, y);
+	    this.ctx.fill();
     }
     drawTargetPointer(x, y, rad){
         this.ctx.fillStyle = "#f00";
