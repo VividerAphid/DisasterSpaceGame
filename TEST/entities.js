@@ -143,6 +143,36 @@ class Pin{
     }
 }
 
+class ContextMenu{
+    constructor(x, y, type){
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.options = this.loadOptions();
+    }
+    loadOptions(){
+        let opts = [];
+        if(this.type == "galaxy"){
+            opts = [{text:"View System", enabled: true}, {text:"Fly to System", enabled:true}]; 
+        }
+        if(this.type == "system"){
+            opts = [{text:"Fly Here", enabled:true}, {text:"View", enabled:true}, {text:"Attack", enabled:false}];
+        }
+        return opts
+    }
+    draw(art){
+        let font = "bold 15px Consolas";
+        let h = this.options.length * 20;
+        let w = 100;
+        art.fillRect(this.x, this.y, w, h, "#444", "#444");
+        for(let r = 0; r < this.options.length; r++){
+            let col = "#fff";
+            if(!this.options[r].enabled) col = "#777";
+            art.drawText(this.x, this.y+(15)+(r*20), this.options[r].text, font, col);
+        }
+    }
+}
+
 class Entity{
     //referring to any game object updated in real time, such as ships, turrets, projectiles
     constructor(id, x, y){
@@ -166,7 +196,7 @@ class Ship extends Entity{
         this.moveSpeed = 20;
     }
     draw(art){
-        art.drawTriangle(this);
+        art.drawTriangle(this, !this.owner.isBot);
     }
     calcDirection(){
         let targetAng = Math.atan2((this.target.x - this.x), (this.target.y - this.y));

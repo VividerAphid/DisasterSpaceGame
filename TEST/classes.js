@@ -6,6 +6,7 @@ class Game{
         this.viewing = -1;
         this.player = -1;
         this.systemHighlight = -1;
+        this.contextMenu = -1;
     }
 }
 

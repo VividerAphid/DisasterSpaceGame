@@ -45,10 +45,10 @@ class artist{
         this.ctx.font = font;
         this.ctx.fillText(text, x, y);
     }
-    drawTriangle(triangle){
+    drawTriangle(triangle, isHighlighted, bW, h){
         let g = this.ctx;
-        let baseWidth = 10;
-        let height = 14;
+        let baseWidth = bW || 10;
+        let height = h || 14;
         let scaledX = triangle.x * this.scale;
         let scaledY = triangle.y * this.scale;
         g.save();
@@ -67,7 +67,7 @@ class artist{
         g.closePath();
         g.fill();
 
-        if(triangle.owner.isBot == false){
+        if(isHighlighted){
             //console.log("drawing player");
             g.strokeStyle = "#fff";
             g.lineWidth = 2;

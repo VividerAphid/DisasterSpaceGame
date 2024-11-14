@@ -32,6 +32,9 @@ function renderStarSystem(gam){
     if(gam.map[gam.viewing].pin != -1){
         gam.map[gam.viewing].pin.draw(gam.graphics);
     }
+    if(gam.contextMenu != -1){
+        gam.contextMenu.draw(gam.graphics);
+    }
 }
 
 function checkClick(gam){
@@ -74,6 +77,7 @@ function checkClick(gam){
             let action = "";
             if(gam.viewing == gam.player.location){
                 system.pin = new Pin(x, y);
+                gam.contextMenu = new ContextMenu(x, y, "system");
                 gam.player.ship.target = system.pin;
                 gam.player.ship.calcDirection();
             }
