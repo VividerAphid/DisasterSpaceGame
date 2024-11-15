@@ -12,8 +12,12 @@ function renderMap(gam){
         systems[r].drawStar(arty);
         systems[r].drawDebugs(arty);
     }
+    if(gam.contextMenu != -1){
+        gam.contextMenu.draw(gam.graphics);
+    }
     let playerLoc = [gam.map[gam.player.location].x, gam.map[gam.player.location].y-10,]
     gam.graphics.drawPointer(playerLoc[0], playerLoc[1], gam.player.color);
+    
 }
 
 function renderStarSystem(gam){
@@ -47,25 +51,36 @@ function checkClick(gam){
 
     if(gam.viewState == "Galaxy"){
         let highlight = -1;
-        for(let r = 0; r < map.length; r++){
-            if (x >= (map[r].x - (map[r].radius + clickRad)) && x <= (map[r].x + (map[r].radius + clickRad))){
-                if (y >= (map[r].y - (map[r].radius + clickRad)) && y <= (map[r].y + (map[r].radius + clickRad))){
-                    if(gam.systemHighlight == r){
-                        gam.viewState = "StarSystem";
-                        gam.viewing = r;
-                        renderStarSystem(gam);
-                    }
-                    else{
-                        highlight = r;
+        let menuClick = false;
+        if(gam.contextMenu != -1){
+            if((x >= gam.contextMenu.x && x <= (gam.contextMenu.x + gam.contextMenu.width) && (y >= gam.contextMenu.y && y <= (gam.contextMenu.y + gam.contextMenu.height)))){
+                gam.contextMenu.handleClick(x, y, gam);
+                menuClick = true;
+            }
+            else{
+                menuClick = false;
+            }
+        }
+        if(!menuClick){
+            for(let r = 0; r < map.length; r++){
+                if (x >= (map[r].x - (map[r].radius + clickRad)) && x <= (map[r].x + (map[r].radius + clickRad))){
+                    if (y >= (map[r].y - (map[r].radius + clickRad)) && y <= (map[r].y + (map[r].radius + clickRad))){
+                        if(gam.systemHighlight != r){
+                            highlight = r;
+                        }
                     }
                 }
             }
-        }
-        if(highlight != -1){
-            gam.systemHighlight = highlight;
-        }
-        else{
-            gam.systemHighlight = -1;
+            if(highlight != -1){
+                gam.systemHighlight = highlight;
+                gam.contextMenu = new ContextMenu(x, y, "galaxy");
+            }
+            else{
+                gam.systemHighlight = -1;
+                if(!menuClick){
+                    gam.contextMenu = -1;
+                }
+            }
         }
         renderMap(gam);
     }
@@ -116,7 +131,7 @@ function generateMapContents(map){
     let moonColors = ["#966", "#ccc", "#595757"];
     let aphiRan = new AphidRandom("seed");
     for(let r = 0; r < map.length; r++){
-        let xButtonFunc = function(gam){gam.map[gam.viewing].pin = -1; gam.viewState = "Galaxy"; gam.viewing = -1; renderMap(gam); return "exit";};
+        let xButtonFunc = function(gam){gam.map[gam.viewing].pin = -1; gam.contextMenu = -1; gam.viewState = "Galaxy"; gam.viewing = -1; renderMap(gam); return "exit";};
         let xButtonDraw = function(graphics){graphics.drawStar(25,35,"#900",20); graphics.drawText(10,50,"X","bold 45px Consolas","#fff");};
         let xButton = new ClickButton(0, 25, 35, 20, xButtonFunc, xButtonDraw);
         map[r].bodies.push(xButton);

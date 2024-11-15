@@ -7,13 +7,13 @@ X-Render system for star system view
     -Other space stations
 X-Crude ship movement
    X-Move to pin
-    -Dashed line for movement path
+   X-Dashed line for movement path
     -System jump
     -Fleet
       -Fleet follows point ship
       -Maintain offset
  -Action menu
-     -Move here
+    X-Move here
      -View
      -Grey out invalid options
  -Resource Nodes

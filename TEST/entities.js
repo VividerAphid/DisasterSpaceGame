@@ -147,19 +147,27 @@ class ContextMenu{
     constructor(x, y, type){
         this.x = x;
         this.y = y;
-        this.type = type;
-        this.options = this.loadOptions();
         this.buttonHeight = 20;
         this.width = 100;
+        this.type = type;
+        this.options = this.loadOptions();
         this.height = this.options.length * this.buttonHeight;
     }
     loadOptions(){
         let opts = [];
         if(this.type == "galaxy"){
-            opts = [new ContextMenuButton("View System", "", true), new ContextMenuButton("Fly to System", "", true)]; 
+            opts = [new ContextMenuButton("View System", function(gam){gam.viewState = "StarSystem"; gam.viewing = gam.systemHighlight; gam.systemHighlight = -1; renderStarSystem(gam);}, true), 
+                new ContextMenuButton("Fly to System", function(gam){gam.map[gam.player.location].entities = removeItem(gam.map[gam.player.location].entities, gam.player.ship);
+                    gam.player.ship.target = -1;
+                    gam.player.location = gam.systemHighlight;
+                    gam.map[gam.player.location].entities.push(gam.player.ship); 
+                    gam.systemHighlight = -1; 
+                    gam.player.ship.x = 500; gam.player.ship.y = 500;}, true)];
+            this.width = 125;
         }
         if(this.type == "system"){
-            opts = [new ContextMenuButton("Fly Here", function(gam){gam.player.ship.target = gam.map[gam.viewing].pin; gam.player.ship.calcDirection();}, true), 
+            opts = [new ContextMenuButton("Fly Here", function(gam){gam.player.ship.target = gam.map[gam.viewing].pin; 
+                gam.player.ship.calcDirection();}, true), 
                 new ContextMenuButton("View", "", false), 
                 new ContextMenuButton("Attack", "", false)];
         }
@@ -176,10 +184,13 @@ class ContextMenu{
     handleClick(x, y, gam, data){
         let h = this.y;
         for(let r = 0; r < this.options.length; r++){
-            if(y > h && y < h+this.buttonHeight && this.options[r].enabled){
+            if((y > h && y < h+this.buttonHeight) && this.options[r].enabled){
                 this.options[r].action(gam);
                 gam.contextMenu = -1;
-                gam.map[gam.viewing].pin = -1;
+                if(gam.viewing != -1){
+                    gam.map[gam.viewing].pin = -1;
+                }
+                break;
             }
             else{
                 h += 20;
