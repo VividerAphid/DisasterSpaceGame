@@ -4,6 +4,15 @@ class artist{
         this.scale = 1;
         this.labelFont = "bold 15px Consolas";
     }
+    dashedLine(x1, y1, x2, y2, color){
+        this.ctx.strokeStyle = color;
+        this.ctx.beginPath();
+        this.ctx.setLineDash([10, 10]);
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+    }
     fillRect(x, y, w, h, fill, stroke){
         this.ctx.fillStyle = fill;
         this.ctx.strokeStyle = stroke;

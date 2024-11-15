@@ -149,27 +149,55 @@ class ContextMenu{
         this.y = y;
         this.type = type;
         this.options = this.loadOptions();
+        this.buttonHeight = 20;
+        this.width = 100;
+        this.height = this.options.length * this.buttonHeight;
     }
     loadOptions(){
         let opts = [];
         if(this.type == "galaxy"){
-            opts = [{text:"View System", enabled: true}, {text:"Fly to System", enabled:true}]; 
+            opts = [new ContextMenuButton("View System", "", true), new ContextMenuButton("Fly to System", "", true)]; 
         }
         if(this.type == "system"){
-            opts = [{text:"Fly Here", enabled:true}, {text:"View", enabled:true}, {text:"Attack", enabled:false}];
+            opts = [new ContextMenuButton("Fly Here", function(gam){gam.player.ship.target = gam.map[gam.viewing].pin; gam.player.ship.calcDirection();}, true), 
+                new ContextMenuButton("View", "", false), 
+                new ContextMenuButton("Attack", "", false)];
         }
         return opts
     }
     draw(art){
         let font = "bold 15px Consolas";
-        let h = this.options.length * 20;
-        let w = 100;
-        art.fillRect(this.x, this.y, w, h, "#444", "#444");
+        art.fillRect(this.x, this.y, this.width, this.height, "#444", "#444");
         for(let r = 0; r < this.options.length; r++){
-            let col = "#fff";
-            if(!this.options[r].enabled) col = "#777";
-            art.drawText(this.x, this.y+(15)+(r*20), this.options[r].text, font, col);
+            
+            this.options[r].draw(art, this.x+5, this.y+(15)+(r*20), font);
         }
+    }
+    handleClick(x, y, gam, data){
+        let h = this.y;
+        for(let r = 0; r < this.options.length; r++){
+            if(y > h && y < h+this.buttonHeight && this.options[r].enabled){
+                this.options[r].action(gam);
+                gam.contextMenu = -1;
+                gam.map[gam.viewing].pin = -1;
+            }
+            else{
+                h += 20;
+            }
+        }
+    }
+}
+
+class ContextMenuButton{
+    constructor(text, actionFunc, enabled){
+        this.text = text;
+        this.action = actionFunc;
+        this.enabled = enabled || false;   
+    }
+    draw(art, x, y, font){
+        let col = "#fff";
+        if(!this.enabled) col = "#777";
+        art.drawText(x, y, this.text, font, col);
     }
 }
 
@@ -196,6 +224,9 @@ class Ship extends Entity{
         this.moveSpeed = 20;
     }
     draw(art){
+        if(this.target != -1){
+            art.dashedLine(this.x, this.y, this.target.x, this.target.y, "#999");
+        }
         art.drawTriangle(this, !this.owner.isBot);
     }
     calcDirection(){
@@ -218,7 +249,9 @@ class Ship extends Entity{
             this.y += dy ;   
         }
         else{
-            gam.map[gam.viewing].pin = -1;
+            if(this.target == gam.map[gam.viewing].pin){
+                gam.map[gam.viewing].pin = -1;
+            }
         }
     }
 }

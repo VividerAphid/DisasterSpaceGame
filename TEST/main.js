@@ -75,11 +75,18 @@ function checkClick(gam){
             let bodies = system.bodies;
             let ents = system.entities;
             let action = "";
-            if(gam.viewing == gam.player.location){
+            if(gam.viewing == gam.player.location && system.pin == -1){
                 system.pin = new Pin(x, y);
                 gam.contextMenu = new ContextMenu(x, y, "system");
-                gam.player.ship.target = system.pin;
-                gam.player.ship.calcDirection();
+            }
+            else{
+                if((x >= gam.contextMenu.x && x <= (gam.contextMenu.x + gam.contextMenu.width) && (y >= gam.contextMenu.y && y <= (gam.contextMenu.y + gam.contextMenu.height)))){
+                    gam.contextMenu.handleClick(x, y, gam);
+                }
+                else{
+                    system.pin = -1;//new Pin(x, y);
+                    gam.contextMenu = -1; //new ContextMenu(x, y, "system");
+                }
             }
             for(let r = 0; r < bodies.length; r++){
                 if (x >= (bodies[r].x - (bodies[r].radius + clickRad)) && x <= (bodies[r].x + (bodies[r].radius + clickRad))){
