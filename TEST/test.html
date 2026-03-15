@@ -20,12 +20,15 @@
     <script>
         let ctx = mapCan.getContext('2d');
         let arty = new artist(ctx);
+        var randomSeed = "seed";
         let gam = new Game([], arty);
         let player = initPlayer();
         let map = generateMapContents(getMapMed(),gam);
         gam.map = map;
         gam.player = player;
         gam.map[player.location].entities.push(player.ship);
+        gam.npcs = generateNPCs();
+        addNPCToSystem();
         var isTicking = true;
         var systemViewTick = setInterval(gameTick, 500, gam);
         var galaxyTick = "";

@@ -162,26 +162,28 @@ function generateMapContents(map){
         }
         map[r].bodies.push(new ResourceNode(42, aphiRan.rangeInt(20, centerCoords[0]*2),aphiRan.rangeInt(20, centerCoords[0]*2), "Rare Cheese", 20, 20));
     }
-    //For demoing colors
-    // for(let r = 0; r < starColors.length; r++){
-    //     map[0].bodies.push(new Star(r+2, 400+(r*80), 800, 20, starColors[r]));
-    // }
     return map;
 }
 
 function gameTick(gam){
-    if(isTicking && gam.viewState == "StarSystem"){
-        let ents = gam.map[gam.viewing].entities;
-        for(let r = 0; r < ents.length; r++){
-            ents[r].step(gam);
+    for(let r = 0; r < gam.npcs.length; r++){
+        gam.npcs[r].step();
+    }
+    for(let r = 0; r < gam.map.length; r++){
+        let ents = gam.map[r].entities;
+        for(let t = 0; t < ents.length; t++){
+            ents[t].step(gam);
         }
+    }
+    
+    if(isTicking && gam.viewState == "StarSystem"){    
         renderStarSystem(gam);
     }
 }
 
 function initPlayer(){
     let player = new Player(1, "Player", "#a00");
-    let aphiRan = new AphidRandom("seed");
+    let aphiRan = new AphidRandom(randomSeed);
     player.location = 44;
     player.x = aphiRan.rangeInt(20, 1000);
     player.y = aphiRan.rangeInt(20, 1000);
@@ -189,4 +191,35 @@ function initPlayer(){
     ship.direction = degreesToRadians(aphiRan.rangeInt(0, 360));
     player.ship = ship;
     return player;
+}
+
+function generateNPCs(){
+    let colorOpts = ["#00e", "#090", "#cc0", "#d00", "#0bb", "#c0c", "#ccc"];
+    let aphiRan = new AphidRandom(randomSeed+"s");
+    let npcs = [];
+    let npcID = 2;
+    for(let r = 0; r < gam.map.length; r++){
+        if(aphiRan.random() > .3){
+            let count = aphiRan.rangeInt(1, 10);
+            for(let t = 0; t < count; t++){
+                let tempNPC = new NPC(npcID, "NPC"+npcID, colorOpts[aphiRan.rangeInt(0, colorOpts.length+1)]);
+                tempNPC.location = r;
+                tempNPC.x = aphiRan.rangeInt(20, 1000);
+                tempNPC.y = aphiRan.rangeInt(20, 1000);
+                let tempShip = new Ship(npcID, tempNPC.x, tempNPC.y, tempNPC, tempNPC.color);
+                tempShip.direction = degreesToRadians(aphiRan.rangeInt(0, 360));
+                tempNPC.ship = tempShip;
+                npcs.push(tempNPC);
+                npcID++;
+            }
+        }
+    }
+    return npcs;
+}
+
+function addNPCToSystem(){
+    for(let r = 0; r < gam.npcs.length; r++){
+        gam.map[gam.npcs[r].location].entities.push(gam.npcs[r].ship);
+        gam.npcs[r].pickTask();
+    }
 }

@@ -219,6 +219,7 @@ class Entity{
         this.x = x;
         this.y = y;
         this.moveSpeed = 0;
+        this.entType = "entity";
     }
     step(){
         console.log("Default step not overriden!");
@@ -232,7 +233,9 @@ class Ship extends Entity{
         this.color = color;
         this.direction = 0;
         this.target = -1;
+        this.status = "no-target";
         this.moveSpeed = 20;
+        this.entType = "ship";
     }
     draw(art){
         if(this.target != -1){
@@ -245,9 +248,12 @@ class Ship extends Entity{
         this.direction = targetAng;
     }
     step(gam){
+        if(this.target != -1){
+            this.calcDirection();
+        }
         let dx = this.target.x - this.x ;
         let dy = this.target.y - this.y ; // Make sure it's TARGET MINUS SELF, NOT THE OTHER WAY AROUND (or it'll go backwards)
-        const len = Math.sqrt(dx * dx + dy * dy) ; // basically the distance to the target position.
+        let len = Math.sqrt(dx * dx + dy * dy) ; // basically the distance to the target position.
         
         if(len > 0){
             // let targetAng = Math.atan2((this.moveTarget.x - this.x), (this.moveTarget.y - this.y));
@@ -257,12 +263,15 @@ class Ship extends Entity{
             dx *= factor ;
             dy *= factor ;
             this.x += dx ;
-            this.y += dy ;   
+            this.y += dy ;
+            this.status = "moving";   
         }
         else{
-            if(this.target == gam.map[gam.viewing].pin){
-                gam.map[gam.viewing].pin = -1;
-            }
+            // if(this.target == gam.map[gam.viewing].pin){
+            //     gam.map[gam.viewing].pin = -1;
+            // }
+            this.target = -1;
+            this.status = "arrived";
         }
     }
 }
