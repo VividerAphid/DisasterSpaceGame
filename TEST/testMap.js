@@ -20,7 +20,6 @@ function getMapSmall(){
     return map;
 }
 
-
 function getMapMed(){
     var map = [
         new StarSystem(0, 520, 220, [37,58,24,66,67],[]),
@@ -100,24 +99,3 @@ function getMapMed(){
     new StarSystem(74, 914, 496, [16,23,22],[])];
     return map;
 }
-
-
-
-// {id:0, x:475, y:350, connections:[8,1,9,3]},
-// {id:1, x:405, y:305, connections:[2,0,3]},
-// {id:2, x:447, y:244, connections:[8,1,10,7]},
-// {id:3, x:356, y:455, connections:[13,0,1,5,4]},
-// {id:4, x:197, y:591, connections:[5,3]},
-// {id:5, x:197, y:362, connections:[3,4,6]},
-// {id:6, x:187, y:192, connections:[5,7]},
-// {id:7, x:379, y:132, connections:[6,2]},
-// {id:8, x:527, y:280, connections:[0,2,10,9,11]},
-// {id:9, x:563, y:408, connections:[0,8,13,12]},
-// {id:10, x:569, y:216, connections:[2,8,11,15]},
-// {id:11, x:682, y:321, connections:[10,8,16,12,17]},
-// {id:12, x:643, y:470, connections:[9,14,17,11]},
-// {id:13, x:469, y:504, connections:[9,3]},
-// {id:14, x:606, y:639, connections:[12,17]},
-// {id:15, x:686, y:124, connections:[10,16]},
-// {id:16, x:868, y:269, connections:[15,11]},
-// {id:17, x:795, y:491, connections:[14,12,11]}];
