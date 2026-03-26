@@ -39,6 +39,18 @@ class StarSystem{
             }
         }
     }
+    addEntity(entity){
+        this.entities.push(entity);
+    }
+    removeEntity(entity){
+        this.entities = removeItem(this.entities, entity);
+    }
+    addBody(body){
+        this.bodies.push(body);
+    }
+    removeBody(body){
+        this.bodies = removeItem(this.bodies, body);
+    }
 }
 
 class Body{
@@ -157,16 +169,16 @@ class ContextMenu{
         let opts = [];
         if(this.type == "galaxy"){
             opts = [new ContextMenuButton("View System", function(gam){gam.viewState = "StarSystem"; gam.viewing = gam.systemHighlight; gam.systemHighlight = -1; renderStarSystem(gam);}, true), 
-                new ContextMenuButton("Fly to System", function(gam){gam.map[gam.player.location].entities = removeItem(gam.map[gam.player.location].entities, gam.player.ship);
+                new ContextMenuButton("Fly to System", function(gam){gam.map[gam.player.location].removeEntity(gam.player.ship);
                     gam.player.ship.target = -1;
                     gam.player.location = gam.systemHighlight;
-                    gam.map[gam.player.location].entities.push(gam.player.ship); 
+                    gam.map[gam.player.location].addEntity(gam.player.ship); 
                     gam.systemHighlight = -1; 
                     gam.player.ship.x = 500; gam.player.ship.y = 500;}, true)];
             this.width = 125;
         }
         if(this.type == "system"){
-            opts = [new ContextMenuButton("Fly Here", function(gam){gam.player.ship.target = gam.map[gam.viewing].pin; 
+            opts = [new ContextMenuButton("Fly Here", function(gam){gam.player.ship.setTarget(gam.map[gam.viewing].pin, true); 
                 gam.player.ship.calcDirection();}, true), 
                 new ContextMenuButton("View", "", false), 
                 new ContextMenuButton("Attack", "", false)];
@@ -236,6 +248,8 @@ class Ship extends Entity{
         this.status = "no-target";
         this.moveSpeed = 20;
         this.entType = "ship";
+        this.xVariance = 0;
+        this.yVariance = 0;
     }
     draw(art){
         if(this.target != -1){
@@ -244,20 +258,20 @@ class Ship extends Entity{
         art.drawTriangle(this, !this.owner.isBot);
     }
     calcDirection(){
-        let targetAng = Math.atan2((this.target.x - this.x), (this.target.y - this.y));
+        let targetAng = Math.atan2(((this.target.x + this.xVariance) - this.x), ((this.target.y + this.yVariance) - this.y));
         this.direction = targetAng;
     }
     step(gam){
-        if(this.target != -1){
-            this.calcDirection();
-        }
-        let dx = this.target.x - this.x ;
-        let dy = this.target.y - this.y ; // Make sure it's TARGET MINUS SELF, NOT THE OTHER WAY AROUND (or it'll go backwards)
+        let dx = (this.target.x + this.xVariance) - this.x ;
+        let dy = (this.target.y + this.yVariance) - this.y ; // Make sure it's TARGET MINUS SELF, NOT THE OTHER WAY AROUND (or it'll go backwards)
         let len = Math.sqrt(dx * dx + dy * dy) ; // basically the distance to the target position.
         
         if(len > 0){
             // let targetAng = Math.atan2((this.moveTarget.x - this.x), (this.moveTarget.y - this.y));
             // this.direction = targetAng;
+            if(this.target != -1){
+                this.calcDirection();
+            }   
             const new_len = Math.min(this.moveSpeed, len) ;
             const factor = new_len / len ;
             dx *= factor ;
@@ -273,5 +287,12 @@ class Ship extends Entity{
             this.target = -1;
             this.status = "arrived";
         }
+    }
+    setTarget(target, precise){
+        if(!precise){
+            this.xVariance = Math.floor(Math.random()*30) - 15;
+            this.yVariance = Math.floor(Math.random()*30) - 15;
+        }
+        this.target = target;
     }
 }

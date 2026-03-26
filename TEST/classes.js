@@ -34,33 +34,102 @@ class NPC extends Player{
     pickTask(){
         if(this.location != -1){
             let ran = gam.npcRandom;
-            let pick = 2;//ran.rangeInt(0, 5);
+            let pick = ran.rangeInt(0, 4);
             switch(pick){
                 case 0: //idle
                     let idleTime = ran.rangeInt(10, 100);
                     this.task = {type:"idle", duration: idleTime};
                     break;
                 case 1: //move
-                    this.task = {type: "move", target: []};
+                    let xPick = ran.rangeInt(300, 1200);
+                    let yPick = ran.rangeInt(300, 1200);
+                    this.task = {type: "move", target: {x:xPick, y: yPick}, duration:1}; //duration 1 to trigger picking new task
                     break;
                 case 2: //visit
                     let opts = gam.map[this.location].bodies;
                     let choice = ran.rangeInt(1, opts.length);
                     let waitTime = ran.rangeInt(10, 100);
                     this.task = {type: "visit", target: opts[choice], duration:waitTime};
-                    this.ship.target = this.task.target;
+                    this.ship.setTarget(this.task.target, false);
                     break;
                 case 3: //leave
                     this.task = {type: "leave", target: ""};
+                    let pick = ran.rangeInt(0, gam.map[this.location].connections.length);
+                    this.task.target = gam.map[this.location].connections[pick];
+                    this.ship.setTarget({x:0, y:0}, false);
                     break;
             }
         }
     }
     step(){
         if(this.ship.status == "arrived"){
-            this.task.duration--;
-            if(this.task.duration == 0){
-                this.pickTask();
+            if(this.task.type == "leave"){
+                gam.map[this.location].removeEntity(this.ship);
+                gam.map[this.task.target].addEntity(this.ship);
+                this.location = this.task.target;
+                let xPick = gam.npcRandom.rangeInt(300, 1200);
+                let yPick = gam.npcRandom.rangeInt(300, 1200);
+                this.task = {type: "move", target: {x: xPick, y: yPick}, duration:1};
+                this.ship.setTarget(this.task.target, false);
+            }
+            else{
+                this.task.duration--;
+                if(this.task.duration == 0){
+                    this.pickTask();
+                }
+            }
+        }
+    }
+}
+
+class ItemFactory{
+    constructor(id, x, y, type){
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.product = getFactoryProducts(type);
+        this.producing = false;
+        this.productionProgress = 0;
+        this.inventory = {};
+        this.inventory[type] = 0;
+        this.size = 60;
+        this.widthMult = 1.25;
+    }
+    render(){
+        console.log("ItemFactory render not set up yet!");
+    }
+    receiveMaterials(materials){
+        //expects an object
+        //eg.: {metal: 2, wood: 3, plastic: 2}
+        for(const [key, value] of Object.entries(materials)){
+            if(this.inventory[key]){
+                this.inventory[key] += value;
+            }
+            else{
+                this.inventory[key] = value;
+            }
+        }
+        this.producing = checkCraftable(this.product, this.inventory);
+    }
+    sendProducts(){
+        //handles sending the completed products out
+        let outgoing = this.inventory[this.type];
+        this.inventory[this.type] = 0;
+        return outgoing;
+    }
+    tick(){
+        if(this.producing){
+            if(this.productionProgress < this.product.time){
+                this.productionProgress++;
+            }
+            else{
+                this.inventory[this.type] += this.product.makes;
+                for(const [key, value] of Object.entries(this.product.cost)){
+                    this.inventory[key] -= value;
+                }
+                this.productionProgress = 0;
+                this.producing = checkCraftable(this.product, this.inventory);
             }
         }
     }

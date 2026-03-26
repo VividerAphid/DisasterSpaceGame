@@ -19,7 +19,7 @@ X-Crude ship movement
  -Resource Nodes
  -Improved System generation
    -Resource nodes generate by region
-   -NPC ships generate  
+  X-NPC ships generate  
 -System view neighbor system arrows
       -Flying to arrow warps to system
       -NPC ships flying through approach arrows
