@@ -9,6 +9,7 @@ class Game{
         this.contextMenu = -1;
         this.npcs = [];
         this.npcRandom = new AphidRandom(randomSeed+"npc");
+        this.starSystemRadius = 600;
     }
 }
 
@@ -56,7 +57,14 @@ class NPC extends Player{
                     this.task = {type: "leave", target: ""};
                     let pick = ran.rangeInt(0, gam.map[this.location].connections.length);
                     this.task.target = gam.map[this.location].connections[pick];
-                    this.ship.setTarget({x:0, y:0}, false);
+                    let targetCoords = [];
+                    for(let r = 0; r < gam.map[this.location].neighborArrows.length; r++){
+                        if(gam.map[this.location].neighborArrows[r].id == this.task.target){
+                            targetCoords = gam.map[this.location].neighborArrows[r];
+                            break;
+                        }
+                    }
+                    this.ship.setTarget(targetCoords, false);
                     break;
             }
         }
@@ -67,9 +75,12 @@ class NPC extends Player{
                 gam.map[this.location].removeEntity(this.ship);
                 gam.map[this.task.target].addEntity(this.ship);
                 this.location = this.task.target;
-                let xPick = gam.npcRandom.rangeInt(300, 1200);
-                let yPick = gam.npcRandom.rangeInt(300, 1200);
-                this.task = {type: "move", target: {x: xPick, y: yPick}, duration:1};
+                this.ship.x = gam.starSystemRadius*2 - this.ship.x;
+                this.ship.y = gam.starSystemRadius*2 - this.ship.y;
+                let opts = gam.map[this.location].bodies;
+                let choice = gam.npcRandom.rangeInt(1, opts.length);
+                let waitTime = gam.npcRandom.rangeInt(10, 100);
+                this.task = {type: "visit", target: opts[choice], duration:waitTime};
                 this.ship.setTarget(this.task.target, false);
             }
             else{

@@ -20,16 +20,16 @@ X-Crude ship movement
  -Improved System generation
    -Resource nodes generate by region
   X-NPC ships generate  
--System view neighbor system arrows
+X-System view neighbor system arrows
       -Flying to arrow warps to system
-      -NPC ships flying through approach arrows
+     X-NPC ships flying through approach arrows
 -System tick function
     -2fps tick for animation
     -1 tick per 30 sec for chance of event
       -NPC event type / frequency dependent on system type
       -NPC ships spawn, fly through
-      -NPC ships spawn, fly to random node / station
-      -Existing NPC fleets move / leave
+      X-NPC ships spawn, fly to random node / station
+      X-Existing NPC fleets move / leave
     -1 tick per 15 sec for body updates
 -System types:
   -PvP

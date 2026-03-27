@@ -6,6 +6,7 @@ class StarSystem{
         this.connections = connections;
         this.bodies = bodies;
         this.entities = [];
+        this.neighborArrows = [];
         this.pin = -1; //For when player clicks in system view to create a pin
         this.radius = 20;
     }
@@ -50,6 +51,26 @@ class StarSystem{
     }
     removeBody(body){
         this.bodies = removeItem(this.bodies, body);
+    }
+    calcNeighborArrows(center, map){
+        let centerDist = center || 600;
+        let cons = this.connections;
+        let paddedCenterDist = centerDist;
+        for(let r = 0; r < cons.length; r++){
+            let x = map[cons[r]].x + (centerDist - this.x);
+            let y = map[cons[r]].y + (centerDist - this.y);
+            let dx = centerDist - x;
+            let dy = centerDist - y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            let newX = centerDist - (dx / dist) * paddedCenterDist;
+            let newY = centerDist - (dy / dist) * paddedCenterDist;
+
+            let tri = new TriangleButton(cons[r], newX, newY, 20, 30, {}, "To "+cons[r]);
+            tri.calcDirection({x: centerDist, y: centerDist}, false);
+
+            this.neighborArrows.push(tri);
+        }
     }
 }
 
@@ -141,6 +162,36 @@ class ClickButton{
         this.radius = rad;
         this.action = func;
         this.draw = draw;
+    }
+}
+
+class TriangleButton{
+    constructor(id, x, y, w, h, func, text){
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.color = "#999";
+        this.direction = 0;
+        this.action = func;
+        this.text = text;
+    }
+    calcDirection(target, facingTowards){
+        if(facingTowards){
+            let targetAng = Math.atan2((target.x - this.x), (target.y - this.y));
+            this.direction = targetAng
+        }
+        else{
+            let targetAng = Math.atan2((target.x - this.x), (target.y - this.y));
+            this.direction = targetAng + degreesToRadians(180);
+        }
+        
+    }
+    draw(graphics){
+        graphics.drawTriangle(this, false, this.w, this.h);
+        let font = "bold 20px Consolas";
+        graphics.drawText(this.x, this.y, this.text, font, "#ddd");
     }
 }
 

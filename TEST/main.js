@@ -21,12 +21,16 @@ function renderMap(gam){
 }
 
 function renderStarSystem(gam){
+    let centerDist = 600;
     gam.graphics.fillRect(0, 0, mapCan.width, mapCan.height, "#222", "#222");
-    gam.graphics.drawRing(600, 600, "#999", 600, 3);
+    gam.graphics.drawRing(centerDist, centerDist, "#999", centerDist, 3);
+
+    let arrows = gam.map[gam.viewing].neighborArrows;
+    for(let r = 0; r < arrows.length; r++){
+        arrows[r].draw(gam.graphics);
+    }
     let bodies = gam.map[gam.viewing].bodies;
-    //console.log(bodies);
     for(let r = 0; r < bodies.length; r++){
-        //console.log(r);
         bodies[r].draw(gam.graphics);
     }
     let ents = gam.map[gam.viewing].entities;
@@ -131,6 +135,7 @@ function generateMapContents(map){
     let moonColors = ["#966", "#ccc", "#595757"];
     let aphiRan = new AphidRandom("seed");
     for(let r = 0; r < map.length; r++){
+        map[r].calcNeighborArrows(centerCoords[0], map);
         let xButtonFunc = function(gam){gam.map[gam.viewing].pin = -1; gam.contextMenu = -1; gam.viewState = "Galaxy"; gam.viewing = -1; renderMap(gam); return "exit";};
         let xButtonDraw = function(graphics){graphics.drawStar(25,35,"#900",20); graphics.drawText(10,50,"X","bold 45px Consolas","#fff");};
         let xButton = new ClickButton(0, 25, 35, 20, xButtonFunc, xButtonDraw);
@@ -174,6 +179,9 @@ function gameTick(gam){
         for(let t = 0; t < ents.length; t++){
             ents[t].step(gam);
         }
+        // for(let x = 2; x < gam.map[r].bodies.length; x++){
+        //     gam.map[r].bodies[x].updateOrbit();
+        // }
     }
     
     if(isTicking && gam.viewState == "StarSystem"){    
