@@ -21,7 +21,7 @@ function renderMap(gam){
 }
 
 function renderStarSystem(gam){
-    let centerDist = 600;
+    let centerDist = gam.starSystemRadius;
     gam.graphics.fillRect(0, 0, mapCan.width, mapCan.height, "#222", "#222");
     gam.graphics.drawRing(centerDist, centerDist, "#999", centerDist, 3);
 
@@ -127,7 +127,8 @@ function loadSystemView(){
 
 function generateMapContents(map){
     //new Star(1, 600, 600, 20, "#d00")
-    let centerCoords = [600, 600];
+    map = generateBasicStarNames(map);
+    let centerCoords = [gam.starSystemRadius, gam.starSystemRadius];
     let starColors = ["#e00", "#fff", "#0080ff", "#ff8800", "#ffc800"];
     let starRad = 40;
     let planetRads = [10, 25]; //min max
@@ -142,14 +143,14 @@ function generateMapContents(map){
         map[r].bodies.push(xButton);
         let planetcount = 9;//Math.floor(Math.random()*10);
         let starcolpick = Math.floor(aphiRan.random()*starColors.length);
-        let centerStar = new Star(1, centerCoords[0], centerCoords[1], starRad, starColors[starcolpick]);
+        let centerStar = new Star(1, centerCoords[0], centerCoords[1], starRad, starColors[starcolpick], r);
         map[r].bodies.push(centerStar);
         let prevDist = centerCoords[1] - 100;
         for(let t = 0; t < planetcount; t++){
             let rad = Math.floor(aphiRan.random()* (planetRads[1]-planetRads[0])) + planetRads[0];
             let colpick = Math.floor(aphiRan.random()*planetColors.length);
             let amt = (aphiRan.random()*10) + 5;
-            let planet = new Planet(t+2, centerCoords[0], prevDist, rad, planetColors[colpick], centerStar, amt);
+            let planet = new Planet(t+2, centerCoords[0], prevDist, rad, planetColors[colpick], centerStar, amt, r);
             prevDist = prevDist - ((aphiRan.random()*20) + 50);           
             map[r].bodies.push(planet);
             let ang = aphiRan.random()*360;
@@ -158,14 +159,14 @@ function generateMapContents(map){
                 let moonCount = Math.floor(aphiRan.random()*3) +1;
                 for(let z = 0; z < moonCount; z++){
                     let mooncol = Math.floor(aphiRan.random()*moonColors.length);
-                    let moon = new Planet(t+2, planet.x, planet.y - 30, 5, moonColors[mooncol], planet, 3);
+                    let moon = new Planet(t+2, planet.x, planet.y - 30, 5, moonColors[mooncol], planet, 3, r);
                     map[r].bodies.push(moon);
                     planet.satellites.push(moon);
                     moon.handleRotate(aphiRan.random()*360, planet);
                 }
             }
         }
-        map[r].bodies.push(new ResourceNode(42, aphiRan.rangeInt(20, centerCoords[0]*2),aphiRan.rangeInt(20, centerCoords[0]*2), "Rare Cheese", 20, 20));
+        map[r].bodies.push(new ResourceNode(42, aphiRan.rangeInt(20, centerCoords[0]*2),aphiRan.rangeInt(20, centerCoords[0]*2), "Rare Cheese", 20, 20, r));
     }
     return map;
 }
@@ -230,4 +231,13 @@ function addNPCToSystem(){
         gam.map[gam.npcs[r].location].entities.push(gam.npcs[r].ship);
         gam.npcs[r].pickTask();
     }
+}
+
+function generateBasicStarNames(map){
+    let ran = new AphidRandom("seed");
+    for(let r = 0; r < map.length; r++){
+        let pick = ran.rangeInt(65, 91);
+        map[r].setName(String.fromCharCode(pick) + "-"+r);
+    }
+    return map;
 }

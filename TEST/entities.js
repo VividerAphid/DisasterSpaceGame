@@ -1,6 +1,7 @@
 class StarSystem{
     constructor(id, x, y, connections, bodies){
         this.id = id;
+        this.name = id;
         this.x = x;
         this.y = y;
         this.connections = connections;
@@ -21,7 +22,7 @@ class StarSystem{
         // art.drawText(this.x-7, this.y, this.colorChars, art.labelFont, this.colorInverse);
     }
     drawDebugs(art){
-        art.drawText(this.x-10, this.y, this.id, art.labelFont, "#f00");
+        art.drawText(this.x-10, this.y, this.name, art.labelFont, "#f00");
     }
     drawConnections(art, map){
         let reps = this.connections.length;
@@ -66,19 +67,23 @@ class StarSystem{
             let newX = centerDist - (dx / dist) * paddedCenterDist;
             let newY = centerDist - (dy / dist) * paddedCenterDist;
 
-            let tri = new TriangleButton(cons[r], newX, newY, 20, 30, {}, "To "+cons[r]);
+            let tri = new TriangleButton(cons[r], newX, newY, 20, 30, {}, "To "+map[cons[r]].name);
             tri.calcDirection({x: centerDist, y: centerDist}, false);
 
             this.neighborArrows.push(tri);
         }
     }
+    setName(name){
+        this.name = name;
+    }
 }
 
 class Body{
-    constructor(id, x, y){
+    constructor(id, x, y, systemID){
         this.id = id;
         this.x = x;
         this.y = y;
+        this.systemID = systemID;
     }
     draw(art){
         console.log("Default Body draw()!");
@@ -94,19 +99,21 @@ class Body{
 }
 
 class Star extends Body{
-    constructor(id, x, y, radius, color){
-        super(id, x, y);
+    constructor(id, x, y, radius, color, systemID){
+        super(id, x, y, systemID);
         this.radius = radius;
         this.color = color;
     }
     draw(art){
         art.drawStar(this.x, this.y, this.color, this.radius);
+        let labelFont = "bold 25px Consolas";
+        art.drawText(this.x-25, this.y-40, gam.map[this.systemID].name, labelFont, "#fff");
     }
 }
 
 class Planet extends Body{
-    constructor(id, x, y, radius, color, orbiting, orbitAmount){
-        super(id, x, y);
+    constructor(id, x, y, radius, color, orbiting, orbitAmount, systemID){
+        super(id, x, y, systemID);
         this.radius = radius;
         this.color = color;
         this.orbiting = orbiting;
@@ -136,14 +143,14 @@ class Planet extends Body{
 }
 
 class Station extends Body{
-    constructor(id, x, y){  
-        super(id, x, y);
+    constructor(id, x, y, systemID){  
+        super(id, x, y, systemID);
     }
 }
 
 class ResourceNode extends Body{
-    constructor(id, x, y, resource, rate, slots){
-        super(id, x, y);
+    constructor(id, x, y, resource, rate, slots, systemID){
+        super(id, x, y, systemID);
         this.resource = resource;
         this.rate = rate;
         this.slots = slots;
@@ -191,7 +198,7 @@ class TriangleButton{
     draw(graphics){
         graphics.drawTriangle(this, false, this.w, this.h);
         let font = "bold 20px Consolas";
-        graphics.drawText(this.x, this.y, this.text, font, "#ddd");
+        graphics.drawText(this.x-10, this.y-10, this.text, font, "#ddd");
     }
 }
 
