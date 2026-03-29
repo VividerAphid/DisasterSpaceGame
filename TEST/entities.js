@@ -10,6 +10,8 @@ class StarSystem{
         this.neighborArrows = [];
         this.pin = -1; //For when player clicks in system view to create a pin
         this.radius = 20;
+        this.regionType = 0; //0: trade hub, 1: pve, 2: pvp
+        this.territoryColor = "neut";
     }
     drawStar(art){
         art.drawStar(this.x, this.y, "#ddd", this.radius);
@@ -40,6 +42,9 @@ class StarSystem{
                 art.ctx.stroke();
             }
         }
+    }
+    drawRegionType(art){
+        art.drawStar(this.x, this.y, this.territoryColor, this.radius * 4);
     }
     addEntity(entity){
         this.entities.push(entity);
@@ -226,7 +231,7 @@ class ContextMenu{
     loadOptions(){
         let opts = [];
         if(this.type == "galaxy"){
-            opts = [new ContextMenuButton("View System", function(gam){gam.viewState = "StarSystem"; gam.viewing = gam.systemHighlight; gam.systemHighlight = -1; renderStarSystem(gam);}, true), 
+            opts = [new ContextMenuButton("View System", function(gam){gam.viewState = "StarSystem"; gam.viewing = gam.systemHighlight; gam.systemHighlight = -1; setCanvasSize(gam.viewState); renderStarSystem(gam);}, true), 
                 new ContextMenuButton("Fly to System", function(gam){gam.map[gam.player.location].removeEntity(gam.player.ship);
                     gam.player.ship.target = -1;
                     gam.player.location = gam.systemHighlight;

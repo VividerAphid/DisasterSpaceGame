@@ -10,6 +10,12 @@ class Game{
         this.npcs = [];
         this.npcRandom = new AphidRandom(randomSeed+"npc");
         this.starSystemRadius = 600;
+        this.regionColors = ["#660", "#050", "#500"];
+        this.canvasSizes = {galaxy: getGalaxyViewDimensions(this.map), starSystem:{width: 1350, height: 1250}};
+    }
+    setMap(map){
+        this.map = map;
+        this.canvasSizes.galaxy = getGalaxyViewDimensions(this.map);
     }
 }
 

@@ -23,8 +23,8 @@
         var randomSeed = "seed";
         let gam = new Game([], arty);
         let player = initPlayer();
-        let map = generateMapContents(getMapMed(),gam);
-        gam.map = map;
+        let map = generateMapContents(getMapLarge(),gam);
+        gam.setMap(map);
         gam.player = player;
         gam.map[player.location].entities.push(player.ship);
         gam.npcs = generateNPCs();
@@ -32,8 +32,8 @@
         var isTicking = true;
         var systemViewTick = setInterval(gameTick, 500, gam);
         var galaxyTick = "";
-        //console.log(map);
         mapCan.onclick = function(){checkClick(gam);};
+        setCanvasSize(gam.viewState);
         renderMap(gam);
     </script>
 </body>

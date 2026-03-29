@@ -3,6 +3,11 @@ function renderMap(gam){
     let systems = gam.map;
     let arty = gam.graphics;
     for(let r = 0; r < systems.length; r++){
+        if(systems[r].territoryColor != "neut"){
+            systems[r].drawRegionType(arty);
+        }   
+    }
+    for(let r = 0; r < systems.length; r++){
         systems[r].drawConnections(arty, systems);
     }
     for(let r = 0; r < systems.length; r++){
@@ -121,13 +126,11 @@ function checkClick(gam){
     }
 }
 
-function loadSystemView(){
-
-}
-
 function generateMapContents(map){
     //new Star(1, 600, 600, 20, "#d00")
     map = generateBasicStarNames(map);
+    map = calcRegionTypes(map);
+    map = generateTerritoriesBasic(map);
     let centerCoords = [gam.starSystemRadius, gam.starSystemRadius];
     let starColors = ["#e00", "#fff", "#0080ff", "#ff8800", "#ffc800"];
     let starRad = 40;
@@ -137,7 +140,7 @@ function generateMapContents(map){
     let aphiRan = new AphidRandom("seed");
     for(let r = 0; r < map.length; r++){
         map[r].calcNeighborArrows(centerCoords[0], map);
-        let xButtonFunc = function(gam){gam.map[gam.viewing].pin = -1; gam.contextMenu = -1; gam.viewState = "Galaxy"; gam.viewing = -1; renderMap(gam); return "exit";};
+        let xButtonFunc = function(gam){gam.map[gam.viewing].pin = -1; gam.contextMenu = -1; gam.viewState = "Galaxy"; gam.viewing = -1; setCanvasSize(gam.viewState); renderMap(gam); return "exit";};
         let xButtonDraw = function(graphics){graphics.drawStar(25,35,"#900",20); graphics.drawText(10,50,"X","bold 45px Consolas","#fff");};
         let xButton = new ClickButton(0, 25, 35, 20, xButtonFunc, xButtonDraw);
         map[r].bodies.push(xButton);
@@ -193,7 +196,7 @@ function gameTick(gam){
 function initPlayer(){
     let player = new Player(1, "Player", "#a00");
     let aphiRan = new AphidRandom(randomSeed);
-    player.location = 44;
+    player.location = 4;
     player.x = aphiRan.rangeInt(20, 1000);
     player.y = aphiRan.rangeInt(20, 1000);
     let ship = new Ship(1, player.x, player.y, player, player.color);
@@ -202,7 +205,7 @@ function initPlayer(){
     return player;
 }
 
-function generateNPCs(){
+function generateNPCsBasic(){
     let colorOpts = ["#00e", "#090", "#cc0", "#d00", "#0bb", "#c0c", "#ccc"];
     let aphiRan = new AphidRandom(randomSeed+"s");
     let npcs = [];
@@ -226,6 +229,93 @@ function generateNPCs(){
     return npcs;
 }
 
+function generateTerritoriesBasic(map){
+    let pvpRegion = calcPvPRegion(map);
+    let colorOpts = ["#00e", "#090", "#cc0", "#d00", "#0bb", "#c0c"];
+    let aphiRan = new AphidRandom(randomSeed+"f");   
+    for(let r = 0; r < colorOpts.length; r++){
+        let pick = aphiRan.rangeInt(0, pvpRegion.length);
+        pvpRegion[pick].territoryColor = colorOpts[r];
+        let cons = pvpRegion[pick].connections;
+        for(let t = 0; t < cons.length; t++){
+            if(map[cons[t]].regionType == 2){
+                map[cons[t]].territoryColor = colorOpts[r];
+            }
+            if(aphiRan.rangeDec(0, 1) > .8){
+                let extendCons = map[cons[t]].connections;
+                for(let x = 0; x < extendCons.length; x++){
+                    map[extendCons[x]].territoryColor = colorOpts[r];
+                }
+            }
+        }
+    }
+    return map;
+}
+
+function generateFactionNPCs(map, npcs, npcID){
+    let pvpRegion = calcPvPRegion(map);
+    let aphiRan = new AphidRandom(randomSeed+"fn");   
+    for(let r = 0; r < pvpRegion.length; r++){
+        if(pvpRegion[r].territoryColor != "neut"){
+            let count = aphiRan.rangeInt(2, 10);
+            for(let t = 0; t < count; t++){
+                let tempNPC = new NPC(npcID, "NPC"+npcID, pvpRegion[r].territoryColor);
+                tempNPC.location = pvpRegion[r].id;
+                tempNPC.x = aphiRan.rangeInt(20, 1000);
+                tempNPC.y = aphiRan.rangeInt(20, 1000);
+                let tempShip = new Ship(npcID, tempNPC.x, tempNPC.y, tempNPC, tempNPC.color);
+                tempShip.direction = degreesToRadians(aphiRan.rangeInt(0, 360));
+                tempNPC.ship = tempShip;
+                npcs.push(tempNPC);
+                npcID++;
+            }
+        }
+    }
+    return npcs;
+}
+
+function calcPvPRegion(map){
+    let pvpRegion = [];
+    for(let r = 0; r < map.length; r++){
+        if(map[r].regionType == 2){
+            pvpRegion.push(map[r]);
+        }
+    }
+    return pvpRegion;
+}
+
+function generateNPCs(){
+    let colorOpts = ["#00e", "#090", "#cc0", "#d00", "#0bb", "#c0c", "#ccc"];
+    let aphiRan = new AphidRandom(randomSeed+"s");
+    let npcs = [];
+    let npcID = 2;
+    for(let r = 0; r < gam.map.length; r++){
+        if(gam.map[r].regionType < 2){
+            if(aphiRan.random() > .15){
+                let count = aphiRan.rangeInt(1, 10);
+                for(let t = 0; t < count; t++){
+                    let factionChance = aphiRan.rangeDec(0, 1);
+                    let tempNPC = new NPC(npcID, "NPC"+npcID, colorOpts[6]);
+                    if(factionChance > .8){
+                        tempNPC.color = colorOpts[aphiRan.rangeInt(0, colorOpts.length)];
+                    }
+                    tempNPC.location = r;
+                    tempNPC.x = aphiRan.rangeInt(20, 1000);
+                    tempNPC.y = aphiRan.rangeInt(20, 1000);
+                    let tempShip = new Ship(npcID, tempNPC.x, tempNPC.y, tempNPC, tempNPC.color);
+                    tempShip.direction = degreesToRadians(aphiRan.rangeInt(0, 360));
+                    tempNPC.ship = tempShip;
+                    npcs.push(tempNPC);
+                    npcID++;
+                }
+            }
+        }
+        
+    }
+    generateFactionNPCs(gam.map, npcs, npcID);
+    return npcs;
+}
+
 function addNPCToSystem(){
     for(let r = 0; r < gam.npcs.length; r++){
         gam.map[gam.npcs[r].location].entities.push(gam.npcs[r].ship);
@@ -233,11 +323,63 @@ function addNPCToSystem(){
     }
 }
 
+function calcRegionTypes(map){
+    let center = getMapCenter(map);
+    let ran = new AphidRandom(randomSeed);
+    for(let r = 0; r < map.length; r++){
+        let dist = findLengthPoints(map[r].x, center.x, map[r].y, center.y);
+        if(dist < (.15*center.x)){ //75
+            map[r].regionType = 0;
+        }
+        else if(dist >= (.15*center.x) && dist < (.5*center.x)){ //75 - 250
+            map[r].regionType = 1;
+        }
+        else{
+            // let pick = ran.rangeDec(0, 1);
+            // if(pick < .075){
+            //     map[r].regionType = 1;
+            // }
+            // else{
+            //     map[r].regionType = 2;
+            // }
+            map[r].regionType = 2;
+        }
+    }
+    return map;
+}
+
 function generateBasicStarNames(map){
-    let ran = new AphidRandom("seed");
+    let ran = new AphidRandom(randomSeed);
     for(let r = 0; r < map.length; r++){
         let pick = ran.rangeInt(65, 91);
         map[r].setName(String.fromCharCode(pick) + "-"+r);
     }
     return map;
+}
+
+function getMapCenter(map){
+    let avX = 0;
+    let avY = 0;
+    for(let r = 0; r < map.length; r++){
+        avX += map[r].x;
+        avY += map[r].y;
+    }
+    return {x: (avX/map.length), y: (avY/map.length)};
+}
+
+function getGalaxyViewDimensions(map){
+    let center = getMapCenter(map);
+    let padding = 1.03;
+    return {width: (center.x*2)*padding, height: (center.y*2)*padding};
+}
+
+function setCanvasSize(state){
+    if(state == "Galaxy"){
+        mapCan.width = gam.canvasSizes.galaxy.width;
+        mapCan.height = gam.canvasSizes.galaxy.height;
+    }
+    else{
+        mapCan.width = gam.canvasSizes.starSystem.width;
+        mapCan.height = gam.canvasSizes.starSystem.height;
+    }
 }
