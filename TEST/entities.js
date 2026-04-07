@@ -219,34 +219,39 @@ class Pin{
 }
 
 class ContextMenu{
-    constructor(x, y, type){
+    constructor(x, y){
         this.x = x;
         this.y = y;
         this.buttonHeight = 20;
         this.width = 100;
-        this.type = type;
-        this.options = this.loadOptions();
+        this.options = [new ContextMenuButton("Default button", {}, true)];
+        this.height = 100;
+    }
+    loadGalaxyMenuPreset(){
+        this.options = [new ContextMenuButton("View System", function(gam){gam.viewState = "StarSystem"; gam.viewing = gam.systemHighlight; gam.systemHighlight = -1; setCanvasSize(gam.viewState); renderStarSystem(gam);}, true), 
+            new ContextMenuButton("Fly to System", function(gam){gam.map[gam.player.location].removeEntity(gam.player.ship);
+                gam.player.ship.target = -1;
+                gam.player.location = gam.systemHighlight;
+                gam.map[gam.player.location].addEntity(gam.player.ship); 
+                gam.systemHighlight = -1; 
+                gam.player.ship.x = 500; gam.player.ship.y = 500;}, true)];
+                this.width = 125;
         this.height = this.options.length * this.buttonHeight;
     }
-    loadOptions(){
-        let opts = [];
-        if(this.type == "galaxy"){
-            opts = [new ContextMenuButton("View System", function(gam){gam.viewState = "StarSystem"; gam.viewing = gam.systemHighlight; gam.systemHighlight = -1; setCanvasSize(gam.viewState); renderStarSystem(gam);}, true), 
-                new ContextMenuButton("Fly to System", function(gam){gam.map[gam.player.location].removeEntity(gam.player.ship);
-                    gam.player.ship.target = -1;
-                    gam.player.location = gam.systemHighlight;
-                    gam.map[gam.player.location].addEntity(gam.player.ship); 
-                    gam.systemHighlight = -1; 
-                    gam.player.ship.x = 500; gam.player.ship.y = 500;}, true)];
-            this.width = 125;
-        }
-        if(this.type == "system"){
-            opts = [new ContextMenuButton("Fly Here", function(gam){gam.player.ship.setTarget(gam.map[gam.viewing].pin, true); 
+    loadSystemMenuPreset(viewButtonInfo, attackButtonInfo){
+        this.options = [new ContextMenuButton("Fly Here", function(gam){gam.player.ship.setTarget(gam.map[gam.viewing].pin, true); 
                 gam.player.ship.calcDirection();}, true), 
-                new ContextMenuButton("View", "", false), 
-                new ContextMenuButton("Attack", "", false)];
+                (viewButtonInfo) ? new ContextMenuButton(viewButtonInfo.text, viewButtonInfo.action, viewButtonInfo.enabled) :new ContextMenuButton("View", "", false), 
+                (attackButtonInfo) ? new ContextMenuButton(attackButtonInfo.text, attackButtonInfo.action, attackButtonInfo.enabled) : new ContextMenuButton("Attack", "", false)];
+        this.height = this.options.length * this.buttonHeight;
+    }
+    loadCustomOptions(buttonInfos){
+        //buttonInfos is an array
+        //button structure is {text: "text", action: function(), enabled:true/false}
+        for(let r = 0; r < buttonInfos.length; r++){
+            this.options.push(new ContextMenuButton(buttonInfos[r].text, buttonInfos[r].action, buttonInfos[r].enabled));
         }
-        return opts
+        this.height = this.options.length * this.buttonHeight;
     }
     draw(art){
         let font = "bold 15px Consolas";

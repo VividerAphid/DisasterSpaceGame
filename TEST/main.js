@@ -83,6 +83,7 @@ function checkClick(gam){
             if(highlight != -1){
                 gam.systemHighlight = highlight;
                 gam.contextMenu = new ContextMenu(x, y, "galaxy");
+                gam.contextMenu.loadGalaxyMenuPreset();
             }
             else{
                 gam.systemHighlight = -1;
@@ -99,9 +100,19 @@ function checkClick(gam){
             let bodies = system.bodies;
             let ents = system.entities;
             let action = "";
+            let clickedBody = "";
+            for(let r = 0; r < bodies.length; r++){
+                if (x >= (bodies[r].x - (bodies[r].radius + clickRad)) && x <= (bodies[r].x + (bodies[r].radius + clickRad))){
+                    if (y >= (bodies[r].y - (bodies[r].radius + clickRad)) && y <= (bodies[r].y + clickRad)){
+                        action = bodies[r].action(gam);
+                        clickedBody = bodies[r];
+                    }
+                }
+            }
             if(gam.viewing == gam.player.location && system.pin == -1){
                 system.pin = new Pin(x, y);
                 gam.contextMenu = new ContextMenu(x, y, "system");
+                gam.contextMenu.loadSystemMenuPreset();
             }
             else{
                 if((x >= gam.contextMenu.x && x <= (gam.contextMenu.x + gam.contextMenu.width) && (y >= gam.contextMenu.y && y <= (gam.contextMenu.y + gam.contextMenu.height)))){
@@ -110,13 +121,6 @@ function checkClick(gam){
                 else{
                     system.pin = -1;//new Pin(x, y);
                     gam.contextMenu = -1; //new ContextMenu(x, y, "system");
-                }
-            }
-            for(let r = 0; r < bodies.length; r++){
-                if (x >= (bodies[r].x - (bodies[r].radius + clickRad)) && x <= (bodies[r].x + (bodies[r].radius + clickRad))){
-                    if (y >= (bodies[r].y - (bodies[r].radius + clickRad)) && y <= (bodies[r].y + clickRad)){
-                        action = bodies[r].action(gam);
-                    }
                 }
             }
             if(action != "exit"){
