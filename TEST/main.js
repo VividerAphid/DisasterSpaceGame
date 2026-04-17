@@ -30,9 +30,9 @@ function renderStarSystem(gam){
     gam.graphics.fillRect(0, 0, mapCan.width, mapCan.height, "#222", "#222");
     gam.graphics.drawRing(centerDist, centerDist, "#999", centerDist, 3);
 
-    let arrows = gam.map[gam.viewing].neighborArrows;
-    for(let r = 0; r < arrows.length; r++){
-        arrows[r].draw(gam.graphics);
+    let buttons = gam.map[gam.viewing].systemButtons;
+    for(let r = 0; r < buttons.length; r++){
+        buttons[r].draw(gam.graphics);
     }
     let bodies = gam.map[gam.viewing].bodies;
     for(let r = 0; r < bodies.length; r++){
@@ -97,22 +97,57 @@ function checkClick(gam){
     else {
         if(gam.viewState == "StarSystem"){
             let system = gam.map[gam.viewing];
+            let buttons = system.systemButtons;
             let bodies = system.bodies;
             let ents = system.entities;
-            let action = "";
             let clickedBody = "";
+            let action = "";
+            for(let r = 0; r < buttons.length; r++){
+                if(circlePointCheck(buttons[r], {x: x, y: y})){
+                        action = buttons[r].action(gam);
+                        clickedBody = {type: "button", button: buttons[r], data: action};
+                        break;
+                }
+            }
             for(let r = 0; r < bodies.length; r++){
                 if (x >= (bodies[r].x - (bodies[r].radius + clickRad)) && x <= (bodies[r].x + (bodies[r].radius + clickRad))){
                     if (y >= (bodies[r].y - (bodies[r].radius + clickRad)) && y <= (bodies[r].y + clickRad)){
-                        action = bodies[r].action(gam);
-                        clickedBody = bodies[r];
+                        clickedBody = {type: "body", body: bodies[r]};
+                        break;
                     }
                 }
             }
             if(gam.viewing == gam.player.location && system.pin == -1){
                 system.pin = new Pin(x, y);
                 gam.contextMenu = new ContextMenu(x, y, "system");
-                gam.contextMenu.loadSystemMenuPreset();
+                if(clickedBody != ""){
+                    
+                    if(clickedBody.type == "button"){
+                        if(clickedBody.data.type == "neighborArrow"){
+                            if(gam.viewing == gam.player.location){
+                                gam.contextMenu.loadSystemMenuPreset(
+                                    {text: "Fly to system", enabled: true, action: function(gam){gam.map[gam.player.location].removeEntity(gam.player.ship);
+                                        gam.player.ship.target = -1;
+                                        gam.player.location = clickedBody.data.toID;
+                                        gam.map[gam.player.location].addEntity(gam.player.ship); 
+                                        gam.player.ship.x = gam.starSystemRadius*2 - clickedBody.data.coords.x; 
+                                        gam.player.ship.y = gam.starSystemRadius*2 - clickedBody.data.coords.y;
+                                        gam.viewing = clickedBody.data.toID;}}, 
+                                    {text: "View system", enabled: true, action: function(gam){gam.viewing = clickedBody.data.toID;}});
+                                    
+                            }
+                            else{
+                                gam.viewing = clickedBody.data.toID;
+                            }
+                        }
+                    }
+                    else{
+                        gam.contextMenu.loadSystemMenuPreset();
+                    }
+                }
+                else{
+                    gam.contextMenu.loadSystemMenuPreset("", {text:"Build", action: function(){console.log("Build button clicked!");}, enabled:true});
+                }
             }
             else{
                 if((x >= gam.contextMenu.x && x <= (gam.contextMenu.x + gam.contextMenu.width) && (y >= gam.contextMenu.y && y <= (gam.contextMenu.y + gam.contextMenu.height)))){
@@ -147,7 +182,7 @@ function generateMapContents(map){
         let xButtonFunc = function(gam){gam.map[gam.viewing].pin = -1; gam.contextMenu = -1; gam.viewState = "Galaxy"; gam.viewing = -1; setCanvasSize(gam.viewState); renderMap(gam); return "exit";};
         let xButtonDraw = function(graphics){graphics.drawStar(25,35,"#900",20); graphics.drawText(10,50,"X","bold 45px Consolas","#fff");};
         let xButton = new ClickButton(0, 25, 35, 20, xButtonFunc, xButtonDraw);
-        map[r].bodies.push(xButton);
+        map[r].systemButtons.push(xButton);
         let planetcount = 9;//Math.floor(Math.random()*10);
         let starcolpick = Math.floor(aphiRan.random()*starColors.length);
         let centerStar = new Star(1, centerCoords[0], centerCoords[1], starRad, starColors[starcolpick], r);

@@ -7,6 +7,7 @@ class StarSystem{
         this.connections = connections;
         this.bodies = bodies;
         this.entities = [];
+        this.systemButtons = [];
         this.neighborArrows = [];
         this.pin = -1; //For when player clicks in system view to create a pin
         this.radius = 20;
@@ -72,9 +73,13 @@ class StarSystem{
             let newX = centerDist - (dx / dist) * paddedCenterDist;
             let newY = centerDist - (dy / dist) * paddedCenterDist;
 
-            let tri = new TriangleButton(cons[r], newX, newY, 20, 30, {}, "To "+map[cons[r]].name);
+            let tri = new TriangleButton(cons[r], newX, newY, 20, 30, 
+                function(){console.log("Arrow to "+map[cons[r]].name + " was clicked!"); 
+                    return {type: "neighborArrow", toID: cons[r], coords: {x:this.x, y: this.y}}},
+                "To "+map[cons[r]].name);
             tri.calcDirection({x: centerDist, y: centerDist}, false);
 
+            this.systemButtons.push(tri);
             this.neighborArrows.push(tri);
         }
     }
@@ -184,6 +189,7 @@ class TriangleButton{
         this.y = y;
         this.w = w;
         this.h = h;
+        this.radius = this.calcRadius(); //For click detection
         this.color = "#999";
         this.direction = 0;
         this.action = func;
@@ -200,10 +206,15 @@ class TriangleButton{
         }
         
     }
+    calcRadius(){
+        return (this.h > this.w) ? this.h : this.w;
+    }
     draw(graphics){
+        //graphics.drawStar(this.x, this.y, "#f00", this.radius);
         graphics.drawTriangle(this, false, this.w, this.h);
         let font = "bold 20px Consolas";
         graphics.drawText(this.x-10, this.y-10, this.text, font, "#ddd");
+
     }
 }
 
@@ -234,7 +245,7 @@ class ContextMenu{
                 gam.player.location = gam.systemHighlight;
                 gam.map[gam.player.location].addEntity(gam.player.ship); 
                 gam.systemHighlight = -1; 
-                gam.player.ship.x = 500; gam.player.ship.y = 500;}, true)];
+                gam.player.ship.x = 500; gam.player.ship.y = 500;}, false)];
                 this.width = 125;
         this.height = this.options.length * this.buttonHeight;
     }
