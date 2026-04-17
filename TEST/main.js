@@ -208,7 +208,22 @@ function generateMapContents(map){
                 }
             }
         }
-        map[r].bodies.push(new ResourceNode(42, aphiRan.rangeInt(20, centerCoords[0]*2),aphiRan.rangeInt(20, centerCoords[0]*2), "Rare Cheese", 20, 20, r));
+        let minDist = centerCoords[1] - 100;
+        let station = new Station(69, centerCoords[0], aphiRan.rangeInt(minDist-150, minDist), r, {name: "Neutral", color:"#666"})       
+        let ang = aphiRan.random()*360;
+        station.handleRotate(ang, centerStar);
+        if(map[r].regionType == 0){
+            map[r].bodies.push(station);
+            station.owner = gam.factions[0];
+        }
+        else if(map[r].regionType == 1){
+            if(aphiRan.random() > .4){
+                map[r].bodies.push(station);
+                if(aphiRan.random() > .25){
+                    station.owner = gam.factions[0];
+                }
+            }
+        }
     }
     return map;
 }

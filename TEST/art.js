@@ -52,6 +52,7 @@ class artist{
         this.ctx.fillStyle = colour;
         this.ctx.strokeStyle = colour;
         this.ctx.font = font;
+        this.ctx.beginPath();
         this.ctx.fillText(text, x, y);
     }
     drawTriangle(triangle, isHighlighted, bW, h){
@@ -94,6 +95,23 @@ class artist{
         }
         g.restore();
     }
+    drawStation(x, y, ownerColor){
+        let radius = 25;
+        let outerRingThickness = 5;
+        let innerPieceRadius = 12;
+        this.drawRing(x, y, "#666", radius, outerRingThickness);
+        this.ctx.lineWidth = 4;
+        this.ctx.strokeStyle = "#555";
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y-(radius + outerRingThickness));
+        this.ctx.lineTo(x, y+(radius + outerRingThickness));
+        this.ctx.moveTo(x-(radius + outerRingThickness), y);
+        this.ctx.lineTo(x+(radius + outerRingThickness), y);
+        this.ctx.stroke();
+        this.drawStar(x, y, "#666", innerPieceRadius);
+        this.drawStar(x, y, ownerColor, innerPieceRadius*.5);
+
+    }
     drawPlanetHighlight(x, y, rad, col){
         this.ctx.lineWidth = 1;
 	    this.ctx.beginPath();
@@ -111,6 +129,7 @@ class artist{
         this.ctx.fillStyle = "#f00";
         this.ctx.strokeStyle = "#f00";
         this.ctx.lineWidth = 5;
+        this.ctx.beginPath();
         this.ctx.moveTo(x, y-(rad+15));
         this.ctx.lineTo(x, y+(rad+15));
         this.ctx.moveTo(x-(rad+15), y);

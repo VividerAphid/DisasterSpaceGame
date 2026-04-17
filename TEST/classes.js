@@ -8,14 +8,30 @@ class Game{
         this.systemHighlight = -1;
         this.contextMenu = -1;
         this.npcs = [];
+        this.factions = [new Faction(1, "The Galactic Government", "#33a")];
+        this.nextFactionID = 2;
         this.npcRandom = new AphidRandom(randomSeed+"npc");
         this.starSystemRadius = 600;
-        this.regionColors = ["#660", "#050", "#500"];
+        this.regionColors = ["#990", "#080", "#800"];
+        this.settings = {showRegionTypeColors: false};
         this.canvasSizes = {galaxy: getGalaxyViewDimensions(this.map), starSystem:{width: 1350, height: 1250}};
     }
     setMap(map){
         this.map = map;
         this.canvasSizes.galaxy = getGalaxyViewDimensions(this.map);
+    }
+    addNewFaction(facInfo){
+        //facInfo is an object expecting name, color
+        //Additonal info may be used soon
+        this.factions.push(new Faction(this.nextFactionID, facInfo.name, facInfo.color));
+    }
+}
+
+class Faction{
+    constructor(id, name, color){
+        this.id = id;
+        this.name = name;
+        this.color = color;
     }
 }
 

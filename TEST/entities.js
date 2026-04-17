@@ -15,7 +15,11 @@ class StarSystem{
         this.territoryColor = "neut";
     }
     drawStar(art){
-        art.drawStar(this.x, this.y, "#ddd", this.radius);
+        let color = "#ddd";
+        if(gam.settings.showRegionTypeColors){
+            color = gam.regionColors[this.regionType];
+        }
+        art.drawStar(this.x, this.y, color, this.radius);
     }
     drawLabels(art){
         // let constMult = "";
@@ -34,8 +38,17 @@ class StarSystem{
             if(connectee > this.id){
                 art.ctx.beginPath();
                 art.ctx.lineWidth = 3;
-                art.ctx.fillStyle = "#999";
-                art.ctx.strokeStyle = "#999";
+                if(gam.settings.showRegionTypeColors){
+                    let gradient = art.ctx.createLinearGradient(this.x, this.y, map[connectee].x, map[connectee].y);
+                    gradient.addColorStop(0, gam.regionColors[this.regionType]);
+                    gradient.addColorStop(1, gam.regionColors[map[connectee].regionType]);
+                    art.ctx.strokeStyle = gradient;
+                }
+                else{
+                    art.ctx.fillStyle = "#999";
+                    art.ctx.strokeStyle = "#999";
+                }
+                
                 //G.fillStyle = "#f0f";
                 //G.strokeStyle = "#f0f"; //FOR TESTING    
                 art.ctx.moveTo(this.x, this.y);
@@ -78,6 +91,7 @@ class StarSystem{
                     return {type: "neighborArrow", toID: cons[r], coords: {x:this.x, y: this.y}}},
                 "To "+map[cons[r]].name);
             tri.calcDirection({x: centerDist, y: centerDist}, false);
+            tri.data = {pointingTo: cons[r]};
 
             this.systemButtons.push(tri);
             this.neighborArrows.push(tri);
@@ -117,7 +131,11 @@ class Star extends Body{
     draw(art){
         art.drawStar(this.x, this.y, this.color, this.radius);
         let labelFont = "bold 25px Consolas";
-        art.drawText(this.x-25, this.y-40, gam.map[this.systemID].name, labelFont, "#fff");
+        let labelColor = "#fff";
+        if(gam.settings.showRegionTypeColors){
+            labelColor = gam.regionColors[gam.map[this.systemID].regionType];
+        }
+        art.drawText(this.x-25, this.y-40, gam.map[this.systemID].name, labelFont, labelColor);
     }
 }
 
@@ -153,8 +171,16 @@ class Planet extends Body{
 }
 
 class Station extends Body{
-    constructor(id, x, y, systemID){  
+    constructor(id, x, y, systemID, owner){  
         super(id, x, y, systemID);
+        this.owner = owner; //owner is type Faction
+        this.clickRadius = 25;
+    }
+    draw(graphics){
+        graphics.drawStation(this.x, this.y, this.owner.color);
+    }
+    get radius(){
+        return this.clickRadius;
     }
 }
 
@@ -189,11 +215,15 @@ class TriangleButton{
         this.y = y;
         this.w = w;
         this.h = h;
-        this.radius = this.calcRadius(); //For click detection
+        this.clickRadius = this.calcClickRadius();
         this.color = "#999";
         this.direction = 0;
         this.action = func;
         this.text = text;
+        this.data = {};
+    }
+    get radius(){
+        return this.clickRadius; //get as radius for consistency
     }
     calcDirection(target, facingTowards){
         if(facingTowards){
@@ -206,14 +236,18 @@ class TriangleButton{
         }
         
     }
-    calcRadius(){
+    calcClickRadius(){
         return (this.h > this.w) ? this.h : this.w;
     }
     draw(graphics){
         //graphics.drawStar(this.x, this.y, "#f00", this.radius);
         graphics.drawTriangle(this, false, this.w, this.h);
         let font = "bold 20px Consolas";
-        graphics.drawText(this.x-10, this.y-10, this.text, font, "#ddd");
+        let labelColor = "#ddd";
+        if(gam.settings.showRegionTypeColors && this.data.pointingTo != null){ //This will probably bite me in the ass later
+            labelColor = gam.regionColors[gam.map[this.data.pointingTo].regionType];
+        }
+        graphics.drawText(this.x-10, this.y-10, this.text, font, labelColor);
 
     }
 }
