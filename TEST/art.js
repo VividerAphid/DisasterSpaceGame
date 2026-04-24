@@ -125,7 +125,7 @@ class artist{
         this.ctx.lineTo(x+(bodyWidth+5), y);
         this.ctx.stroke();
         this.ctx.beginPath();
-        this.ctx.ellipse(x, x, bodyWidth, bodyHeight, 0, 0, 2 * Math.PI);
+        this.ctx.ellipse(x, y, bodyWidth, bodyHeight, 0, 0, 2 * Math.PI);
         this.ctx.fill();
         this.drawStar(x, y, ownerColor, 8);
     }

@@ -13,6 +13,9 @@ class StarSystem{
         this.radius = 20;
         this.regionType = 0; //0: trade hub, 1: pve, 2: pvp
         this.owner = "neut";
+        this.station = "";
+        this.outpost = "";
+        this.platforms = [];
         this.allowedToConstruct = "none"; //"none", Faction(s), or "any", "any" for neutral pvp region systems
     }
     get territoryColor(){
@@ -96,7 +99,7 @@ class StarSystem{
             let newY = centerDist - (dy / dist) * paddedCenterDist;
 
             let tri = new TriangleButton(cons[r], newX, newY, 20, 30, 
-                function(){console.log("Arrow to "+map[cons[r]].name + " was clicked!"); 
+                function(){//console.log("Arrow to "+map[cons[r]].name + " was clicked!"); 
                     return {type: "neighborArrow", toID: cons[r], coords: {x:this.x, y: this.y}}},
                 "To "+map[cons[r]].name);
             tri.calcDirection({x: centerDist, y: centerDist}, false);
@@ -321,11 +324,29 @@ class ContextMenu{
         this.height = this.options.length * this.buttonHeight;
     }
     loadSystemMenuPreset(viewButtonInfo, attackButtonInfo){
-        this.options = [new ContextMenuButton("Fly Here", function(gam){gam.player.ship.setTarget(gam.map[gam.viewing].pin, true); 
+        this.options = [new ContextMenuButton("Fly Here", function(gam, data){gam.player.ship.setTarget(data.pin, true); 
                 gam.player.ship.calcDirection();}, true), 
                 (viewButtonInfo) ? new ContextMenuButton(viewButtonInfo.text, viewButtonInfo.action, viewButtonInfo.enabled) :new ContextMenuButton("View", "", false), 
                 (attackButtonInfo) ? new ContextMenuButton(attackButtonInfo.text, attackButtonInfo.action, attackButtonInfo.enabled) : new ContextMenuButton("Attack", "", false)];
         this.height = this.options.length * this.buttonHeight;
+    }
+    loadBuildMenuPreset(target, gam){
+        this.options = [
+            new ContextMenuButton("Build Outpost", function(){
+                    gam.player.ship.setTarget(target, true); 
+                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "outpost", {x: target.x, y: target.y, owner:new Faction(69, "Player", gam.player.color)});}
+                    }, !gam.map[gam.viewing].outpost),
+            new ContextMenuButton("Build Platform", function(){
+                    gam.player.ship.setTarget(target, true); 
+                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "platform", {x: target.x, y: target.y, owner:new Faction(69, "Player", gam.player.color)});}
+                    }, (gam.map[gam.viewing].platforms.length <= 32)),
+            new ContextMenuButton("Build Station", function(){
+                    gam.player.ship.setTarget(target, true); 
+                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "station", {x: target.x, y: target.y, owner:new Faction(69, "Player", gam.player.color)});}
+                    }, !gam.map[gam.viewing].station),
+        ];
+        this.height = this.options.length * this.buttonHeight;
+        this.width = 125;
     }
     loadCustomOptions(buttonInfos){
         //buttonInfos is an array
@@ -347,11 +368,13 @@ class ContextMenu{
         let h = this.y;
         for(let r = 0; r < this.options.length; r++){
             if((y > h && y < h+this.buttonHeight) && this.options[r].enabled){
-                this.options[r].action(gam);
+                let data = {};
+                data.pin = (gam.viewing != -1) ? ((gam.map[gam.viewing].pin) ? {x: gam.map[gam.viewing].pin.x, y: gam.map[gam.viewing].pin.y} : -1) : -1;
                 gam.contextMenu = -1;
                 if(gam.viewing != -1){
                     gam.map[gam.viewing].pin = -1;
                 }
+                this.options[r].action(gam, data);
                 break;
             }
             else{
@@ -396,6 +419,7 @@ class Ship extends Entity{
         this.direction = 0;
         this.target = -1;
         this.status = "no-target";
+        this.action = ""; //For queueing things such as building
         this.moveSpeed = 20;
         this.entType = "ship";
         this.xVariance = 0;
@@ -436,6 +460,10 @@ class Ship extends Entity{
             // }
             this.target = -1;
             this.status = "arrived";
+            if(this.action){
+                this.action();
+                this.action = ""; 
+            }
         }
     }
     setTarget(target, precise){

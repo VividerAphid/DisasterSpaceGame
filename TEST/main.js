@@ -119,7 +119,7 @@ function checkClick(gam){
             }
             if(gam.viewing == gam.player.location && system.pin == -1){
                 system.pin = new Pin(x, y);
-                gam.contextMenu = new ContextMenu(x, y, "system");
+                gam.contextMenu = new ContextMenu(x, y);
                 if(clickedBody != ""){
                     
                     if(clickedBody.type == "button"){
@@ -146,7 +146,7 @@ function checkClick(gam){
                     }
                 }
                 else{
-                    gam.contextMenu.loadSystemMenuPreset("", {text:"Build", action: function(){handleConstruction(gam.map, gam.viewing, "platform", {x: x, y:y, owner:new Faction(69, "Player", gam.player.color)} )}, enabled:(gam.map[gam.viewing].regionType == 2)});
+                    gam.contextMenu.loadSystemMenuPreset("", {text:"Build", action: function(){system.pin = new Pin(x, y); gam.contextMenu = new ContextMenu(x, y); gam.contextMenu.loadBuildMenuPreset({x:x, y:y}, gam)}, enabled:(gam.map[gam.viewing].regionType == 2)});
                 }
             }
             else{
@@ -359,13 +359,18 @@ function handleSystemNeutralise(map, systemID){
 
 function handleConstruction(map, systemID, type, data){
     if(type == "outpost"){
-        map[systemID].bodies.push(new Outpost(55, data.x, data.y, systemID, data.owner));
+        map[systemID].outpost = new Outpost(55, data.x, data.y, systemID, data.owner);
+        map[systemID].bodies.push(map[systemID].outpost);
+        handleSystemClaim(map, systemID, new Faction(69, "Player", gam.player.color));
     }
     else if(type == "platform"){
-        map[systemID].bodies.push(new Platform(66, data.x, data.y, systemID, data.owner));
+        let plat = new Platform(66, data.x, data.y, systemID, data.owner);
+        map[systemID].bodies.push(plat);
+        map[systemID].platforms.push(plat);
     }
     else if(type == "station"){
-        map[systemID].bodies.push(new Station(77, data.x, data.y, systemID, owner));
+        map[systemID].station = new Station(77, data.x, data.y, systemID, data.owner);
+        map[systemID].bodies.push(map[systemID].station);
     }
 }
 
