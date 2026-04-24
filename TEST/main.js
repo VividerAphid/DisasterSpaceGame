@@ -253,7 +253,7 @@ function gameTick(gam){
 function initPlayer(){
     let player = new Player(1, "Player", "#a00");
     let aphiRan = new AphidRandom(randomSeed);
-    player.location = 248;
+    player.location = 4;
     player.x = aphiRan.rangeInt(20, 1000);
     player.y = aphiRan.rangeInt(20, 1000);
     let ship = new Ship(1, player.x, player.y, player, player.color);
