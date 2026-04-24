@@ -12,7 +12,16 @@ class StarSystem{
         this.pin = -1; //For when player clicks in system view to create a pin
         this.radius = 20;
         this.regionType = 0; //0: trade hub, 1: pve, 2: pvp
-        this.territoryColor = "neut";
+        this.owner = "neut";
+        this.allowedToConstruct = "none"; //"none", Faction(s), or "any", "any" for neutral pvp region systems
+    }
+    get territoryColor(){
+        if(this.owner == "neut" || this.owner.id == 1){
+            return "neut";
+        }
+        else{
+            return this.owner.color;
+        }
     }
     drawStar(art){
         let color = "#ddd";
@@ -170,17 +179,45 @@ class Planet extends Body{
     }
 }
 
-class Station extends Body{
-    constructor(id, x, y, systemID, owner){  
+class Constructed extends Body{
+    constructor(id, x, y, systemID, owner){
         super(id, x, y, systemID);
         this.owner = owner; //owner is type Faction
+        this.clickRadius = 20; //DEFAULT
+    }
+    draw(graphics){
+        console.log("Default Constructed draw() not overridden!");
+    }
+    get radius(){
+        return this.clickRadius;
+    }
+}
+class Station extends Constructed{
+    constructor(id, x, y, systemID, owner){  
+        super(id, x, y, systemID, owner);
         this.clickRadius = 25;
     }
     draw(graphics){
         graphics.drawStation(this.x, this.y, this.owner.color);
     }
-    get radius(){
-        return this.clickRadius;
+}
+class Platform extends Constructed{
+    constructor(id, x, y, systemID, owner){
+        super(id, x, y, systemID, owner);
+        this.clickRadius = 20;
+        this.module = "";
+    }
+    draw(graphics){
+        graphics.drawPlatform(this.x, this.y, this.owner.color);
+    }
+}
+
+class Outpost extends Constructed{
+    constructor(id, x, y, systemID, owner){
+        super(id, x, y, systemID, owner);
+    }
+    draw(graphics){
+        graphics.drawOutpost(this.x, this.y, this.owner.color);
     }
 }
 

@@ -112,6 +112,38 @@ class artist{
         this.drawStar(x, y, ownerColor, innerPieceRadius*.5);
 
     }
+    drawOutpost(x, y, ownerColor){
+        let bodyWidth = 20;
+        let bodyHeight = 10;
+        this.ctx.strokeStyle = "#555";
+        this.ctx.fillStyle = "#666";
+        this.ctx.lineWidth = 5;
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y-(bodyHeight+10));
+        this.ctx.lineTo(x, y+(bodyHeight+20));
+        this.ctx.moveTo(x-(bodyWidth+5), y);
+        this.ctx.lineTo(x+(bodyWidth+5), y);
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.ellipse(x, x, bodyWidth, bodyHeight, 0, 0, 2 * Math.PI);
+        this.ctx.fill();
+        this.drawStar(x, y, ownerColor, 8);
+    }
+    drawPlatform(x, y, ownerColor){
+        let width = 20;
+        let height = 15;
+        this.ctx.fillStyle = "#666";
+        this.ctx.strokeStyle = "#555";
+        this.ctx.lineWidth = 4;
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y-(height+5));
+        this.ctx.lineTo(x, y+(height+5));
+        this.ctx.moveTo(x-(height+5), y);
+        this.ctx.lineTo(x+(height+5), y);
+        this.ctx.stroke();
+        this.drawDiamond(x, y, "#666", width, height);
+        this.drawStar(x, y, ownerColor, 7);
+    }
     drawPlanetHighlight(x, y, rad, col){
         this.ctx.lineWidth = 1;
 	    this.ctx.beginPath();

@@ -146,7 +146,7 @@ function checkClick(gam){
                     }
                 }
                 else{
-                    gam.contextMenu.loadSystemMenuPreset("", {text:"Build", action: function(){console.log("Build button clicked!");}, enabled:true});
+                    gam.contextMenu.loadSystemMenuPreset("", {text:"Build", action: function(){handleConstruction(gam.map, gam.viewing, "platform", {x: x, y:y, owner:new Faction(69, "Player", gam.player.color)} )}, enabled:(gam.map[gam.viewing].regionType == 2)});
                 }
             }
             else{
@@ -169,6 +169,7 @@ function generateMapContents(map){
     //new Star(1, 600, 600, 20, "#d00")
     map = generateBasicStarNames(map);
     map = calcRegionTypes(map);
+    generateFactionsBasic();
     map = generateTerritoriesBasic(map);
     let centerCoords = [gam.starSystemRadius, gam.starSystemRadius];
     let starColors = ["#e00", "#fff", "#0080ff", "#ff8800", "#ffc800"];
@@ -215,12 +216,14 @@ function generateMapContents(map){
         if(map[r].regionType == 0){
             map[r].bodies.push(station);
             station.owner = gam.factions[0];
+            handleSystemClaim(map, r, gam.factions[0]);
         }
         else if(map[r].regionType == 1){
             if(aphiRan.random() > .4){
                 map[r].bodies.push(station);
                 if(aphiRan.random() > .25){
                     station.owner = gam.factions[0];
+                    handleSystemClaim(map, r, gam.factions[0]);
                 }
             }
         }
@@ -283,22 +286,36 @@ function generateNPCsBasic(){
     return npcs;
 }
 
+function generateFactionsBasic(){
+    let colorOpts = ["#00e", "#090", "#cc0", "#d00", "#0bb", "#c0c"];
+    let names = ["Blue", "Green", "Yellow", "Red", "Cyan", "Pink"];
+    for(let r = 0; r < colorOpts.length; r++){
+        gam.factions.push(new Faction(r+2, names[r], colorOpts[r]));
+    }
+}
+
 function generateTerritoriesBasic(map){
     let pvpRegion = calcPvPRegion(map);
-    let colorOpts = ["#00e", "#090", "#cc0", "#d00", "#0bb", "#c0c"];
+    let factions = gam.factions.slice(1);
     let aphiRan = new AphidRandom(randomSeed+"f");   
-    for(let r = 0; r < colorOpts.length; r++){
+    for(let r = 0; r < factions.length; r++){
         let pick = aphiRan.rangeInt(0, pvpRegion.length);
-        pvpRegion[pick].territoryColor = colorOpts[r];
+        let outpost = new Outpost(42, gam.starSystemRadius, gam.starSystemRadius-100, pvpRegion[pick].id, factions[r]);
+        pvpRegion[pick].bodies.push(outpost);
+        handleSystemClaim(map, pvpRegion[pick].id, factions[r]);
         let cons = pvpRegion[pick].connections;
         for(let t = 0; t < cons.length; t++){
             if(map[cons[t]].regionType == 2){
-                map[cons[t]].territoryColor = colorOpts[r];
+                let outpost = new Outpost(42, gam.starSystemRadius, gam.starSystemRadius-100, cons[t], factions[r]);
+                map[cons[t]].bodies.push(outpost);
+                handleSystemClaim(map, cons[t], factions[r]);
             }
             if(aphiRan.rangeDec(0, 1) > .8){
                 let extendCons = map[cons[t]].connections;
                 for(let x = 0; x < extendCons.length; x++){
-                    map[extendCons[x]].territoryColor = colorOpts[r];
+                    let outpost = new Outpost(42, gam.starSystemRadius, gam.starSystemRadius-100, extendCons[x], factions[r]);
+                    map[extendCons[x]].bodies.push(outpost);
+                    handleSystemClaim(map, extendCons[x], factions[r]);
                 }
             }
         }
@@ -326,6 +343,30 @@ function generateFactionNPCs(map, npcs, npcID){
         }
     }
     return npcs;
+}
+
+function handleSystemClaim(map, systemID, faction){
+    map[systemID].allowedToConstruct = faction;
+    map[systemID].owner = faction;
+}
+
+function handleSystemNeutralise(map, systemID){
+    if(map[systemID].regionType == 2){
+        map[systemID].allowedToConstruct = "any";
+    }
+    map[systemID].owner = "neut";
+}
+
+function handleConstruction(map, systemID, type, data){
+    if(type == "outpost"){
+        map[systemID].bodies.push(new Outpost(55, data.x, data.y, systemID, data.owner));
+    }
+    else if(type == "platform"){
+        map[systemID].bodies.push(new Platform(66, data.x, data.y, systemID, data.owner));
+    }
+    else if(type == "station"){
+        map[systemID].bodies.push(new Station(77, data.x, data.y, systemID, owner));
+    }
 }
 
 function calcPvPRegion(map){

@@ -99,7 +99,24 @@ BACKLOG:
   -Hyperlanes boost flight speed but are only in certain areas, like roads
   -Factions can construct additional hyperlanes between their owned territory using special stations within each star system
 
-
+-Building
+  -Platforms used for building all types of buildings
+    -T1 -> 1 module slot, lower reactor power, no automation
+    -T2 -> 1 module slot, medium reactor power, choose export target (for production)
+    -T3 -> 2 module slots, highest reactor power
+  -Production done via factories
+    -General Purpose Factory (uses 4 slots) can be built at starports, slower production but wide range of products
+    -Factory Module
+      -Only allowed on Platforms
+      -Uses 1 module slot
+      -Requires "die" of desired product to produce, die does not expire?
+    -Mining Module on platforms
+    -T2 platforms allow destination for produced items to be sent
+  -Defenses
+    -Weapon modules can be placed on platforms / starports
+    -Defensive modules
+    -Equipment modules (jammers, radar)
+  -32? platform limit per system
 
 v?:
  -Map will be a fixed map, generated using map maker tools from clickcon
