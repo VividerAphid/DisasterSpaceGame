@@ -334,16 +334,16 @@ class ContextMenu{
         this.options = [
             new ContextMenuButton("Build Outpost", function(){
                     gam.player.ship.setTarget(target, true); 
-                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "outpost", {x: target.x, y: target.y, owner:new Faction(69, "Player", gam.player.color)});}
+                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "outpost", {x: target.x, y: target.y, owner:gam.player.faction});}
                     }, !gam.map[gam.viewing].outpost),
             new ContextMenuButton("Build Platform", function(){
                     gam.player.ship.setTarget(target, true); 
-                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "platform", {x: target.x, y: target.y, owner:new Faction(69, "Player", gam.player.color)});}
-                    }, (gam.map[gam.viewing].platforms.length <= 32)),
+                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "platform", {x: target.x, y: target.y, owner:gam.player.faction});}
+                    }, (gam.map[gam.viewing].platforms.length <= 32 && gam.map[gam.viewing].outpost)),
             new ContextMenuButton("Build Station", function(){
                     gam.player.ship.setTarget(target, true); 
-                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "station", {x: target.x, y: target.y, owner:new Faction(69, "Player", gam.player.color)});}
-                    }, !gam.map[gam.viewing].station),
+                    gam.player.ship.action = function(){handleConstruction(gam.map, gam.viewing, "station", {x: target.x, y: target.y, owner:gam.player.faction});}
+                    }, (!gam.map[gam.viewing].station && gam.map[gam.viewing].outpost)),
         ];
         this.height = this.options.length * this.buttonHeight;
         this.width = 125;

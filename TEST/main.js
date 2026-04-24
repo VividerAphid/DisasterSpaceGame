@@ -146,7 +146,7 @@ function checkClick(gam){
                     }
                 }
                 else{
-                    gam.contextMenu.loadSystemMenuPreset("", {text:"Build", action: function(){system.pin = new Pin(x, y); gam.contextMenu = new ContextMenu(x, y); gam.contextMenu.loadBuildMenuPreset({x:x, y:y}, gam)}, enabled:(gam.map[gam.viewing].regionType == 2)});
+                    gam.contextMenu.loadSystemMenuPreset("", {text:"Build", action: function(){system.pin = new Pin(x, y); gam.contextMenu = new ContextMenu(x, y); gam.contextMenu.loadBuildMenuPreset({x:x, y:y}, gam)}, enabled:(gam.map[gam.viewing].regionType == 2 && (gam.player.faction == gam.map[gam.viewing].allowedToConstruct || gam.map[gam.viewing].allowedToConstruct == "any"))});
                 }
             }
             else{
@@ -253,7 +253,7 @@ function gameTick(gam){
 function initPlayer(){
     let player = new Player(1, "Player", "#a00");
     let aphiRan = new AphidRandom(randomSeed);
-    player.location = 4;
+    player.location = 248;
     player.x = aphiRan.rangeInt(20, 1000);
     player.y = aphiRan.rangeInt(20, 1000);
     let ship = new Ship(1, player.x, player.y, player, player.color);
@@ -302,12 +302,14 @@ function generateTerritoriesBasic(map){
         let pick = aphiRan.rangeInt(0, pvpRegion.length);
         let outpost = new Outpost(42, gam.starSystemRadius, gam.starSystemRadius-100, pvpRegion[pick].id, factions[r]);
         pvpRegion[pick].bodies.push(outpost);
+        pvpRegion[pick].outpost = outpost;
         handleSystemClaim(map, pvpRegion[pick].id, factions[r]);
         let cons = pvpRegion[pick].connections;
         for(let t = 0; t < cons.length; t++){
             if(map[cons[t]].regionType == 2){
                 let outpost = new Outpost(42, gam.starSystemRadius, gam.starSystemRadius-100, cons[t], factions[r]);
                 map[cons[t]].bodies.push(outpost);
+                map[cons[t]].outpost = outpost;
                 handleSystemClaim(map, cons[t], factions[r]);
             }
             if(aphiRan.rangeDec(0, 1) > .8){
@@ -315,6 +317,7 @@ function generateTerritoriesBasic(map){
                 for(let x = 0; x < extendCons.length; x++){
                     let outpost = new Outpost(42, gam.starSystemRadius, gam.starSystemRadius-100, extendCons[x], factions[r]);
                     map[extendCons[x]].bodies.push(outpost);
+                    map[extendCons[x]].outpost = outpost;
                     handleSystemClaim(map, extendCons[x], factions[r]);
                 }
             }
@@ -361,7 +364,7 @@ function handleConstruction(map, systemID, type, data){
     if(type == "outpost"){
         map[systemID].outpost = new Outpost(55, data.x, data.y, systemID, data.owner);
         map[systemID].bodies.push(map[systemID].outpost);
-        handleSystemClaim(map, systemID, new Faction(69, "Player", gam.player.color));
+        handleSystemClaim(map, systemID, data.owner);
     }
     else if(type == "platform"){
         let plat = new Platform(66, data.x, data.y, systemID, data.owner);
@@ -443,6 +446,7 @@ function calcRegionTypes(map){
             //     map[r].regionType = 2;
             // }
             map[r].regionType = 2;
+            map[r].allowedToConstruct = "any";
         }
     }
     return map;

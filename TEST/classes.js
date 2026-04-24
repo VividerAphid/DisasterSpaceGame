@@ -45,6 +45,7 @@ class Player{
         this.x = "x"; //"x" for unassigned location to throw error
         this.y = "y"; //"y" for unassigned location to throw error
         this.isBot = false;
+        this.faction = new Faction(69, "Player", color);
     }
 }
 
